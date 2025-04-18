@@ -1,0 +1,54 @@
+@use './variables' as *
+
+@mixin bg-color-type
+    .fire
+        background-color: $bgColor-type-fire
+
+    .electric
+        background-color: $bgColor-type-electric
+
+    .water
+        background-color: $bgColor-type-water
+
+    .grass
+        background-color: $bgColor-type-grass
+
+    .poison
+        background-color: $bgColor-type-poison
+
+    .psychic
+        background-color: $bgColor-type-psychic
+
+    .ghost
+        background-color: $bgColor-type-ghost
+
+    .ground
+        background-color: $bgColor-type-ground
+
+    .rock
+        background-color: $bgColor-type-rock
+
+    .fighting
+        background-color: $bgColor-type-fighting
+
+    .fairy
+        background-color: $bgColor-type-fairy
+
+    .bug
+        background-color: $bgColor-type-bug
+
+    .normal
+        background-color: $bgColor-type-normal
+
+    .ice
+        background-color: $bgColor-type-ice
+
+    .dragon
+        background-color: $bgColor-type-dragon
+
+    .dark
+        background-color: $bgColor-type-dark
+
+@mixin mobile
+    @media (max-width: 500px)
+        @content
