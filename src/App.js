@@ -18,7 +18,7 @@ function App() {
   const [pokemonList, setPokemonList] = useState([]);
   const [activePokemon, setActivePokemon] = useState([]);
   const [fetchLimit, setFetchLimit] = useState(10);
-  const [searchInput, setSearchInput] = useState('');
+  const [textSearch, setTextSearch] = useState('');
 
   async function loadPokemons(offset = 0, limit = 10) {
     const datas = await getPokemons(offset, limit);
@@ -37,13 +37,16 @@ function App() {
     } else {
       const datas = await getPokemonByName(name);
 
-      datas !== 'erro'
-        ? setActivePokemon(datas)
-        : Swal.fire({
-            icon: 'error',
-            title: 'Pokemon não encontrado',
-            text: 'Por favor, tente novamente',
-          });
+      if(datas !== 'erro'){
+        setActivePokemon(datas);
+        setTextSearch('');
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Pokemon não encontrado',
+          text: 'Por favor, verifique o nome do Pokémon',
+        });
+      }    
     }
   }
 
@@ -75,11 +78,11 @@ function App() {
         {activePokemon?.id && (
           <>
             <div className='container-pesquisar'>
-              <Input setSearchInput={setSearchInput} />
+              <Input setTextSearch={setTextSearch} textSearch={textSearch}/>
               <Button
                 text={'Pesquisar'}
                 className={'btn btn-pesquisar'}
-                onClick={() => searchPokemonByName(searchInput)}
+                onClick={() => searchPokemonByName(textSearch)}
               />
             </div>
 

@@ -1,5 +1,8 @@
 import './styles.sass';
-import { useState } from 'react'
+import { useState } from 'react';
+import imgErro from '../../assets/triangle-exclamation-solid.svg';
+import imgLeft from '../../assets/arrow-left-solid.svg';
+import imgRight from '../../assets/arrow-right-solid.svg';
 import Button from '../Button';
 
 export default function Card({
@@ -29,18 +32,29 @@ export default function Card({
         <span className="tipo">{tipo}</span>
         <div className="cartao-imagem">
           <Button
-            text={'<'}
+            text={`${imgLeft}`}
             className={'btn-seta'}
             onClick={() => mudarImagem('front')}
           />
           <img
+            className={
+              imgAtual === 'front'
+                ? image.front_default === null && 'imgErro'
+                : image.back_default === null && 'imgErro'
+            }
             src={
-              imgAtual === 'front' ? image.front_default : image.back_default
+              imgAtual === 'front'
+                ? image.front_default !== null
+                  ? image.front_default
+                  : imgErro
+                : image.back_default !== null
+                  ? image.back_default
+                  : imgErro
             }
             alt={nome}
           />
           <Button
-            text={'>'}
+            text={`${imgRight}`}
             className={'btn-seta'}
             onClick={() => mudarImagem('back')}
           />
