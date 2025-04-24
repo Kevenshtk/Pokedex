@@ -15,15 +15,25 @@ import Button from './components/Button';
 import Input from './components/Input';
 
 function App() {
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingArea, setLoadingArea] = useState('');
   const [pokemonList, setPokemonList] = useState([]);
   const [activePokemon, setActivePokemon] = useState([]);
   const [fetchLimit, setFetchLimit] = useState(10);
   const [textSearch, setTextSearch] = useState('');
+  const [typeSearch, setTypeSearch] = useState('todos');
+
+  if (isInitialLoad) {
+    loadPokemons();
+    setIsInitialLoad(false);
+  }
 
   async function loadPokemons(offset = 0, limit = 10) {
     const datas = await getPokemons(offset, limit);
     setPokemonList(datas);
     setActivePokemon(datas[0]);
+    setTypeSearch('todos');
   }
 
   async function searchPokemonByName(name) {
@@ -35,9 +45,11 @@ function App() {
         footer: 'Por favor, digite o nome do Pokémon',
       });
     } else {
+      setLoadingArea('card');
+      setIsLoading(true);
       const datas = await getPokemonByName(name);
 
-      if(datas !== 'erro'){
+      if (datas !== 'erro') {
         setActivePokemon(datas);
         setTextSearch('');
       } else {
@@ -46,14 +58,20 @@ function App() {
           title: 'Pokemon não encontrado',
           text: 'Por favor, verifique o nome do Pokémon',
         });
-      }    
+      }
+
+      setIsLoading(false);
     }
   }
 
   async function searchPokemonByType(type) {
+    setLoadingArea('aside');
+    setIsLoading(true);
     const datas = await getPokemonByType(type);
     setPokemonList(datas);
     setActivePokemon(datas[0]);
+    setTypeSearch(type);
+    setIsLoading(false);
   }
 
   function loadMorePokemons() {
@@ -65,20 +83,12 @@ function App() {
   }
 
   return (
-    <main className="main">
+    <main className="main" id="topo">
       <section>
-        {!activePokemon?.id && (
-          <Button
-            text={'Carregar Pokémons'}
-            className={'btn'}
-            onClick={() => loadPokemons()}
-          />
-        )}
-
         {activePokemon?.id && (
           <>
-            <div className='container-pesquisar'>
-              <Input setTextSearch={setTextSearch} textSearch={textSearch}/>
+            <div className="container-pesquisar">
+              <Input setTextSearch={setTextSearch} textSearch={textSearch} />
               <Button
                 text={'Pesquisar'}
                 className={'btn btn-pesquisar'}
@@ -86,20 +96,26 @@ function App() {
               />
             </div>
 
-            <Card
-              key={activePokemon.id}
-              id={activePokemon.id}
-              image={activePokemon.sprites}
-              nome={activePokemon.name}
-              tipo={activePokemon.types[0].type.name}
-              habilidades={activePokemon.abilities.map(
-                (habilidade) => habilidade.ability.name
-              )}
-              hp={activePokemon.stats[0].base_stat}
-              ataque={activePokemon.stats[1].base_stat}
-              defesa={activePokemon.stats[2].base_stat}
-              velocidade={activePokemon.stats[5].base_stat}
-            />
+            {isLoading ? (
+              <div className="loading">
+                <p>Carregando...</p>
+              </div>
+            ) : (
+              <Card
+                key={activePokemon.id}
+                id={activePokemon.id}
+                image={activePokemon.sprites}
+                nome={activePokemon.name}
+                tipo={activePokemon.types[0].type.name}
+                habilidades={activePokemon.abilities.map(
+                  (habilidade) => habilidade.ability.name
+                )}
+                hp={activePokemon.stats[0].base_stat}
+                ataque={activePokemon.stats[1].base_stat}
+                defesa={activePokemon.stats[2].base_stat}
+                velocidade={activePokemon.stats[5].base_stat}
+              />
+            )}
           </>
         )}
       </section>
@@ -131,31 +147,48 @@ function App() {
               <option value={'ice'}>Ice</option>
               <option value={'dragon'}>Dragon</option>
               <option value={'dark'}>Dark</option>
+              <option value={'steel'}>Steel</option>
             </select>
           </div>
 
           <ul>
-            {pokemonList.map((pokemon) => (
-              <AsideItem
-                key={pokemon.id}
-                image={pokemon.sprites.front_default}
-                nome={pokemon.name}
-                tipo={pokemon.types[0].type.name}
-                onClick={() => {
-                  const selected = pokemonList.find((p) => p.id === pokemon.id);
-                  setActivePokemon(selected);
-                }}
-              />
-            ))}
+            {isLoading && loadingArea === 'aside' ? (
+              <div className="loading">
+                <p>Carregando...</p>
+              </div>
+            ) : (
+              <>
+                {pokemonList.map((pokemon) => (
+                  <AsideItem
+                    key={pokemon.id}
+                    image={pokemon.sprites.front_default}
+                    nome={pokemon.name}
+                    tipo={pokemon.types[0].type.name}
+                    onClick={() => {
+                      const selected = pokemonList.find(
+                        (p) => p.id === pokemon.id
+                      );
+                      setActivePokemon(selected);
+                    }}
+                  />
+                ))}
+              </>
+            )}
           </ul>
 
-          <Button
-            text={'More'}
-            className={'btn btn-more'}
-            onClick={() => loadMorePokemons()}
-          />
+          {typeSearch === 'todos' && (
+            <Button
+              text={'More'}
+              className={'btn btn-more'}
+              onClick={() => loadMorePokemons()}
+            />
+          )}
         </aside>
       )}
+
+      <a href="#topo" className="btn-topo">
+        ↑
+      </a>
     </main>
   );
 }

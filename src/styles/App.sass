@@ -1,5 +1,12 @@
 @use './utilities' as *
-    
+
+.loading 
+  text-align: center
+  color: #f95587
+  font-weight: bold
+  font-size: 18px
+  margin-top: 20px
+
 .container-aside
     width: 400px
     height: 80%
@@ -47,6 +54,26 @@
 
             &:focus
                 outline: none
+
+.btn-topo
+    display: none
+    width: 50px
+    height: 50px
+    background-color: transparent
+    color: #3185FC
+    font-size: 40px
+    font-weight: 600
+    text-align: center
+    text-decoration: none
+    border: 1px solid #3185FC
+    border-radius: 50%
+    cursor: pointer
+    position: fixed
+    right: 5px
+    bottom: 50px
+
+    @include mobile
+        display: inline
 
 @include mobile
     .container-pesquisar
