@@ -18,8 +18,8 @@ export default function Card({
 }) {
   const [imgAtual, setImgAtual] = useState('front');
 
-  function mudarImagem(opt) {
-    setImgAtual(opt);
+  function mudarImagem() {
+    imgAtual === 'front' ? setImgAtual('back') : setImgAtual('front');
   }
 
   return (
@@ -34,7 +34,7 @@ export default function Card({
           <Button
             text={`${imgLeft}`}
             className={'btn-seta'}
-            onClick={() => mudarImagem('front')}
+            onClick={() => mudarImagem()}
           />
           <img
             className={
@@ -56,7 +56,7 @@ export default function Card({
           <Button
             text={`${imgRight}`}
             className={'btn-seta'}
-            onClick={() => mudarImagem('back')}
+            onClick={() => mudarImagem()}
           />
         </div>
       </div>
