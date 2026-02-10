@@ -1,0 +1,164 @@
+/* eslint-disable @next/next/no-img-element */
+import { EMPOLEON_STATS, TYPE_COLORS as Colors } from "../../constants";
+import { PokemonType } from "../../types";
+
+const Sidebar = () => {
+  return (
+    <div className="bg-white rounded-[40px] shadow-lg p-8 h-fit sticky top-6">
+      <div className="relative flex justify-center mb-8">
+        <div className="absolute top-0 right-0 flex flex-col space-y-2">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+            <i className="fa-solid fa-mars"></i>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-500">
+            <i className="fa-solid fa-venus"></i>
+          </div>
+        </div>
+        <img
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/395.png"
+          alt="Empoleon"
+          className="w-48 h-48 object-contain drop-shadow-2xl -mt-20 z-10"
+        />
+      </div>
+
+      <div className="text-center mb-6">
+        <span className="text-sm font-bold text-gray-400">#395</span>
+        <h2 className="text-3xl font-extrabold text-gray-800">Empoleon</h2>
+        <p className="text-gray-400 text-sm font-medium">Emperor Pokémon</p>
+      </div>
+
+      <div className="flex justify-center gap-2 mb-6">
+        <span
+          className={`${Colors[PokemonType.WATER]} text-xs font-bold text-white px-6 py-1.5 rounded-lg uppercase`}
+        >
+          Water
+        </span>
+        <span
+          className={`${Colors[PokemonType.STEEL]} text-xs font-bold text-white px-6 py-1.5 rounded-lg uppercase`}
+        >
+          Steel
+        </span>
+      </div>
+
+      <div className="mb-8">
+        <h4 className="text-center font-bold text-xs uppercase text-gray-800 mb-3 tracking-widest">
+          Pokédex Entry
+        </h4>
+        <p className="text-center text-sm text-gray-500 leading-relaxed px-4">
+          It swims as fast as a jet boat. The edges of its wings are sharp and
+          can slice apart drifting ice.
+        </p>
+      </div>
+
+      <div className="mb-8">
+        <h4 className="text-center font-bold text-xs uppercase text-gray-800 mb-3 tracking-widest">
+          Abilities
+        </h4>
+        <div className="flex gap-2">
+          <div className="flex-1 bg-gray-50 border border-gray-100 py-2 rounded-xl text-center">
+            <span className="text-sm font-medium text-gray-600">Torrent</span>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-100 py-2 rounded-xl text-center relative group">
+            <span className="text-sm font-medium text-gray-600">Defiant</span>
+            <i className="fa-solid fa-eye-slash absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-[10px]"></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-8 mb-8 text-center">
+        <div>
+          <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
+            Height
+          </h4>
+          <span className="text-lg font-bold text-gray-700">1.7m</span>
+        </div>
+        <div>
+          <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
+            Weight
+          </h4>
+          <span className="text-lg font-bold text-gray-700">84.5kg</span>
+        </div>
+        <div>
+          <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
+            Weaknesses
+          </h4>
+          <div className="flex justify-center gap-1">
+            <div className="w-5 h-5 rounded-full bg-yellow-400 border border-white"></div>
+            <div className="w-5 h-5 rounded-full bg-green-500 border border-white"></div>
+            <div className="w-5 h-5 rounded-full bg-orange-500 border border-white"></div>
+          </div>
+        </div>
+        <div>
+          <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
+            Base Exp
+          </h4>
+          <span className="text-lg font-bold text-gray-700">239</span>
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h4 className="text-center font-bold text-xs uppercase text-gray-800 mb-4 tracking-widest">
+          Stats
+        </h4>
+        <div className="flex justify-between items-end gap-1 px-2">
+          {EMPOLEON_STATS.map((stat, idx) => (
+            <div key={idx} className="flex flex-col items-center flex-1">
+              <div className="w-full h-24 bg-gray-100 rounded-full relative mb-2 overflow-hidden flex flex-col justify-end">
+                <div
+                  className={`w-full ${stat.color} rounded-full`}
+                  style={{
+                    height: `${(stat.value / (stat.label === "Total" ? 700 : 150)) * 100}%`,
+                  }}
+                ></div>
+              </div>
+              <span className="text-[9px] font-bold text-gray-400 mb-1">
+                {stat.shortLabel}
+              </span>
+              <span className="text-[10px] font-bold text-gray-700">
+                {stat.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h4 className="text-center font-bold text-xs uppercase text-gray-800 mb-4 tracking-widest">
+          Evolution
+        </h4>
+        <div className="flex items-center justify-center space-x-4">
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/393.png"
+            alt="evolution one"
+            className="w-10 h-10 grayscale opacity-50"
+          />
+          <i className="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/394.png"
+            alt="evolution two"
+            className="w-10 h-10 grayscale opacity-50"
+          />
+          <i className="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/395.png"
+            alt="evolution three"
+            className="w-14 h-14"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-100">
+        <button className="flex items-center space-x-2 text-gray-400 hover:text-gray-600 transition-colors">
+          <i className="fa-solid fa-chevron-left text-xs"></i>
+          <span className="text-xs font-bold">Prinplup #394</span>
+        </button>
+        <button className="flex items-center space-x-2 text-gray-400 hover:text-gray-600 transition-colors">
+          <span className="text-xs font-bold">#396 Starly</span>
+          <i className="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;
