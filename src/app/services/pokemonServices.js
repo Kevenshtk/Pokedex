@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 
 const getPokemons = async (offset = 0, limit = 9) => {
   try {
@@ -16,7 +16,7 @@ const getPokemons = async (offset = 0, limit = 9) => {
   } catch (error) {
     return {
       status: error.response.status || 500,
-      message: error.response.data.message || "Erro ao buscar dados",
+      message: error.response.data.message || 'Erro ao buscar dados',
     };
   }
 };
@@ -28,6 +28,15 @@ const getPokemoInfo = async (datas) => {
       name: item.name,
       image: item.sprites.front_default,
       types: item.types.map((type) => type.type.name),
+      abilities: item.abilities.map((ability) => ability.ability.name),
+      height: item.height / 10,
+      weight: item.weight / 10,
+      baseExp: item.base_experience,
+      stats: item.stats.reduce((acc, stat) => {
+        acc[stat.stat.name.replace('-', '_')]= stat.base_stat;
+        return acc;
+      }, {}),
+      totalStats: item.stats.reduce((acc, cur) => acc + cur.base_stat, 0),
     };
   });
 

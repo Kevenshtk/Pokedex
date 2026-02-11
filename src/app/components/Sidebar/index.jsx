@@ -1,8 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
-import { EMPOLEON_STATS, TYPE_COLORS as Colors } from "../../constants";
-import { PokemonType } from "../../types";
+import { TYPE_COLORS as Colors } from '../../constants';
 
-const Sidebar = () => {
+const Sidebar = ({ pokemon }) => {
+
+  const EMPOLEON_STATS = [
+    { label: 'HP', shortLabel: 'HP', value: pokemon?.stats.hp, color: 'bg-red-500' },
+    { label: 'Attack', shortLabel: 'ATK', value: pokemon?.stats.attack, color: 'bg-orange-500' },
+    { label: 'Defense', shortLabel: 'DEF', value: pokemon?.stats.defense, color: 'bg-yellow-400' },
+    { label: 'Sp. Atk', shortLabel: 'SpA', value: pokemon?.stats.special_attack, color: 'bg-cyan-400' },
+    { label: 'Sp. Def', shortLabel: 'SpD', value: pokemon?.stats.special_defense, color: 'bg-green-400' },
+    { label: 'Speed', shortLabel: 'SPD', value: pokemon?.stats.speed, color: 'bg-pink-400' },
+    { label: 'Total', shortLabel: 'TOT', value: pokemon?.totalStats, color: 'bg-indigo-500' },
+  ];
+
   return (
     <div className="bg-white rounded-[40px] shadow-lg p-8 h-fit sticky top-6">
       <div className="relative flex justify-center mb-8">
@@ -15,29 +25,31 @@ const Sidebar = () => {
           </div>
         </div>
         <img
-          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/395.png"
-          alt="Empoleon"
+          src={pokemon?.image}
+          alt={pokemon?.name}
           className="w-48 h-48 object-contain drop-shadow-2xl -mt-20 z-10"
         />
       </div>
 
       <div className="text-center mb-6">
-        <span className="text-sm font-bold text-gray-400">#395</span>
-        <h2 className="text-3xl font-extrabold text-gray-800">Empoleon</h2>
+        <span className="text-sm font-bold text-gray-400">#{pokemon?.id}</span>
+        <h2 className="text-3xl font-extrabold text-gray-800 capitalize">
+          {pokemon?.name}
+        </h2>
         <p className="text-gray-400 text-sm font-medium">Emperor Pokémon</p>
       </div>
 
       <div className="flex justify-center gap-2 mb-6">
-        <span
-          className={`${Colors[PokemonType.WATER]} text-xs font-bold text-white px-6 py-1.5 rounded-lg uppercase`}
-        >
-          Water
-        </span>
-        <span
-          className={`${Colors[PokemonType.STEEL]} text-xs font-bold text-white px-6 py-1.5 rounded-lg uppercase`}
-        >
-          Steel
-        </span>
+        {pokemon?.types.map((type, index) => {
+          return (
+            <span
+              key={index}
+              className={`${Colors[type]} text-xs font-bold text-white px-6 py-1.5 rounded-lg uppercase`}
+            >
+              {type}
+            </span>
+          );
+        })}
       </div>
 
       <div className="mb-8">
@@ -55,13 +67,18 @@ const Sidebar = () => {
           Abilities
         </h4>
         <div className="flex gap-2">
-          <div className="flex-1 bg-gray-50 border border-gray-100 py-2 rounded-xl text-center">
-            <span className="text-sm font-medium text-gray-600">Torrent</span>
-          </div>
-          <div className="flex-1 bg-gray-50 border border-gray-100 py-2 rounded-xl text-center relative group">
-            <span className="text-sm font-medium text-gray-600">Defiant</span>
-            <i className="fa-solid fa-eye-slash absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-[10px]"></i>
-          </div>
+          {pokemon?.abilities.map((ability, index) => {
+            return (
+              <div
+                key={index}
+                className="flex-1 bg-gray-50 border border-gray-100 py-2 rounded-xl text-center"
+              >
+                <span className="text-sm font-medium text-gray-600 capitalize">
+                  {ability}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -70,13 +87,13 @@ const Sidebar = () => {
           <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
             Height
           </h4>
-          <span className="text-lg font-bold text-gray-700">1.7m</span>
+          <span className="text-lg font-bold text-gray-700">{pokemon?.height.toString().replace('.', ',')}m</span>
         </div>
         <div>
           <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
             Weight
           </h4>
-          <span className="text-lg font-bold text-gray-700">84.5kg</span>
+          <span className="text-lg font-bold text-gray-700">{pokemon?.weight.toString().replace('.', ',')}kg</span>
         </div>
         <div>
           <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
@@ -92,7 +109,7 @@ const Sidebar = () => {
           <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
             Base Exp
           </h4>
-          <span className="text-lg font-bold text-gray-700">239</span>
+          <span className="text-lg font-bold text-gray-700">{pokemon?.baseExp}</span>
         </div>
       </div>
 
@@ -107,7 +124,7 @@ const Sidebar = () => {
                 <div
                   className={`w-full ${stat.color} rounded-full`}
                   style={{
-                    height: `${(stat.value / (stat.label === "Total" ? 700 : 150)) * 100}%`,
+                    height: `${(stat.value / (stat.label === 'Total' ? 700 : 150)) * 100}%`,
                   }}
                 ></div>
               </div>

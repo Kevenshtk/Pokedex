@@ -1,4 +1,4 @@
-import { PokemonType, Stat } from './types';
+import { PokemonType } from './types';
 
 export const TYPE_COLORS: Record<PokemonType, string> = {
   [PokemonType.GRASS]: 'bg-green-400',
@@ -20,13 +20,3 @@ export const TYPE_COLORS: Record<PokemonType, string> = {
   [PokemonType.FLYING]: 'bg-indigo-400',
   [PokemonType.BUG]: 'bg-green-500',
 };
-
-export const EMPOLEON_STATS: Stat[] = [
-  { label: 'HP', shortLabel: 'HP', value: 84, color: 'bg-red-500' },
-  { label: 'Attack', shortLabel: 'ATK', value: 86, color: 'bg-orange-500' },
-  { label: 'Defense', shortLabel: 'DEF', value: 88, color: 'bg-yellow-400' },
-  { label: 'Sp. Atk', shortLabel: 'SpA', value: 111, color: 'bg-cyan-400' },
-  { label: 'Sp. Def', shortLabel: 'SpD', value: 101, color: 'bg-green-400' },
-  { label: 'Speed', shortLabel: 'SPD', value: 60, color: 'bg-pink-400' },
-  { label: 'Total', shortLabel: 'TOT', value: 530, color: 'bg-indigo-500' },
-];

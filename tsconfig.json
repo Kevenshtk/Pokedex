@@ -30,6 +30,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/components/PokemonCard/index.jsx", "app/page.jsx"  ],
+, "src/app/components/PokemonCard/index.jsx", "src/app/page.jsx", "src/app/components/Sidebar/index.jsx"  ],
   "exclude": ["node_modules"]
 }
