@@ -17,8 +17,6 @@ export default function Home() {
     const result = await getPokemons(offset, limit);
     const pokemons = await getPokemoInfo(result);
 
-    console.log(pokemons);
-
     setDataPokemons(pokemons);
   };
 
