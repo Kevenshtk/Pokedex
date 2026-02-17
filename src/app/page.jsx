@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { getPokemons, getPokemoInfo } from './services/pokemonServices';
+import { useState, useContext } from 'react';
+
+import { PokemonContext } from './context/pokemon';
 
 import Navbar from './components/Navbar';
 import Filters from './components/Filters';
@@ -10,29 +11,18 @@ import SideBar from './components/Sidebar';
 
 export default function Home() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [fetchLimit, setFetchLimit] = useState(9);
-  const [dataPokemons, setDataPokemons] = useState([]);
-
-  const loadPokemons = async (offset, limit) => {
-    const result = await getPokemons(offset, limit);
-    const pokemons = await getPokemoInfo(result);
-
-    setDataPokemons(pokemons);
-  };
+  const {
+    loadPokemons,
+    dataPokemons,
+    loadMorePokemons,
+    seletedPokemon,
+    setSelectedPokemon,
+  } = useContext(PokemonContext);
 
   if (isInitialLoad) {
     loadPokemons();
     setIsInitialLoad(false);
   }
-
-  const loadMorePokemons = () => {
-    setFetchLimit((prevLimit) => {
-      const updatedLimit = prevLimit + 9;
-
-      loadPokemons(0, updatedLimit);
-      return updatedLimit;
-    });
-  };
 
   return (
     <div className="min-h-screen p-4 md:p-8 relative overflow-x-hidden">
@@ -48,7 +38,12 @@ export default function Home() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {dataPokemons.map((pokemon) => (
-                <PokemonCard key={pokemon.id} pokemon={pokemon} />
+                <PokemonCard
+                  key={pokemon.id}
+                  pokemon={pokemon}
+                  isSelected={pokemon.id === seletedPokemon?.id}
+                  onClick={() => setSelectedPokemon(pokemon)}
+                />
               ))}
             </div>
 
@@ -63,7 +58,7 @@ export default function Home() {
           </div>
 
           <div className="lg:col-span-4 mt-20 lg:mt-0">
-            <SideBar pokemon={dataPokemons[5]}/>
+            <SideBar pokemon={seletedPokemon} />
           </div>
         </div>
       </div>

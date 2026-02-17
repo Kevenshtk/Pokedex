@@ -1,9 +1,10 @@
 import { TYPE_COLORS as Colors } from "../../constants";
 
-const PokemonCard = ({ pokemon, isSelected }) => {
+const PokemonCard = ({ pokemon, onClick, isSelected }) => {
   return (
     <div
       className={`bg-white rounded-3xl p-6 flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-all cursor-pointer border-2 ${isSelected ? "border-red-500" : "border-transparent"}`}
+      onClick={onClick}
     >
       <img
         src={pokemon.image}
