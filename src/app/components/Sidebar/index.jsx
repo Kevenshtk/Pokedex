@@ -1,17 +1,59 @@
 /* eslint-disable @next/next/no-img-element */
+import { useContext, useEffect } from 'react';
+import { PokemonContext } from '../../context/pokemon';
 import { TYPE_COLORS as Colors } from '../../constants';
 
 const Sidebar = ({ pokemon }) => {
+  const { loadWeaknesses, weaknesses } = useContext(PokemonContext);
 
   const EMPOLEON_STATS = [
-    { label: 'HP', shortLabel: 'HP', value: pokemon?.stats.hp, color: 'bg-red-500' },
-    { label: 'Attack', shortLabel: 'ATK', value: pokemon?.stats.attack, color: 'bg-orange-500' },
-    { label: 'Defense', shortLabel: 'DEF', value: pokemon?.stats.defense, color: 'bg-yellow-400' },
-    { label: 'Sp. Atk', shortLabel: 'SpA', value: pokemon?.stats.special_attack, color: 'bg-cyan-400' },
-    { label: 'Sp. Def', shortLabel: 'SpD', value: pokemon?.stats.special_defense, color: 'bg-green-400' },
-    { label: 'Speed', shortLabel: 'SPD', value: pokemon?.stats.speed, color: 'bg-pink-400' },
-    { label: 'Total', shortLabel: 'TOT', value: pokemon?.totalStats, color: 'bg-indigo-500' },
+    {
+      label: 'HP',
+      shortLabel: 'HP',
+      value: pokemon?.stats.hp,
+      color: 'bg-red-500',
+    },
+    {
+      label: 'Attack',
+      shortLabel: 'ATK',
+      value: pokemon?.stats.attack,
+      color: 'bg-orange-500',
+    },
+    {
+      label: 'Defense',
+      shortLabel: 'DEF',
+      value: pokemon?.stats.defense,
+      color: 'bg-yellow-400',
+    },
+    {
+      label: 'Sp. Atk',
+      shortLabel: 'SpA',
+      value: pokemon?.stats.special_attack,
+      color: 'bg-cyan-400',
+    },
+    {
+      label: 'Sp. Def',
+      shortLabel: 'SpD',
+      value: pokemon?.stats.special_defense,
+      color: 'bg-green-400',
+    },
+    {
+      label: 'Speed',
+      shortLabel: 'SPD',
+      value: pokemon?.stats.speed,
+      color: 'bg-pink-400',
+    },
+    {
+      label: 'Total',
+      shortLabel: 'TOT',
+      value: pokemon?.totalStats,
+      color: 'bg-indigo-500',
+    },
   ];
+
+  useEffect(() => {
+    loadWeaknesses(pokemon?.name);
+  }, [pokemon?.name]);
 
   return (
     <div className="bg-white rounded-[40px] shadow-lg p-8 h-fit sticky top-6">
@@ -87,29 +129,38 @@ const Sidebar = ({ pokemon }) => {
           <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
             Height
           </h4>
-          <span className="text-lg font-bold text-gray-700">{pokemon?.height.toString().replace('.', ',')}m</span>
+          <span className="text-lg font-bold text-gray-700">
+            {pokemon?.height.toString().replace('.', ',')}m
+          </span>
         </div>
         <div>
           <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
             Weight
           </h4>
-          <span className="text-lg font-bold text-gray-700">{pokemon?.weight.toString().replace('.', ',')}kg</span>
+          <span className="text-lg font-bold text-gray-700">
+            {pokemon?.weight.toString().replace('.', ',')}kg
+          </span>
         </div>
         <div>
           <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
             Weaknesses
           </h4>
           <div className="flex justify-center gap-1">
-            <div className="w-5 h-5 rounded-full bg-yellow-400 border border-white"></div>
-            <div className="w-5 h-5 rounded-full bg-green-500 border border-white"></div>
-            <div className="w-5 h-5 rounded-full bg-orange-500 border border-white"></div>
+            {weaknesses.map((weakness, index) => (
+              <div
+                key={index}
+                className={`w-5 h-5 rounded-full ${Colors[weakness]} border-white`}
+              ></div>
+            ))}
           </div>
         </div>
         <div>
           <h4 className="font-bold text-xs uppercase text-gray-800 mb-2 tracking-widest">
             Base Exp
           </h4>
-          <span className="text-lg font-bold text-gray-700">{pokemon?.baseExp}</span>
+          <span className="text-lg font-bold text-gray-700">
+            {pokemon?.baseExp}
+          </span>
         </div>
       </div>
 
