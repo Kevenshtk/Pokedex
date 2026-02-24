@@ -16,7 +16,7 @@ const getPokemons = async (offset = 0, limit = 9) => {
   } catch (error) {
     return {
       success: false,
-      message: error.response.data.message || 'Erro ao buscar os Pokemons',
+      message: error?.response?.data?.message || 'Erro ao buscar os Pokemons',
     };
   }
 };
@@ -67,9 +67,59 @@ const getWeaknesses = async (pokemonName) => {
   } catch (error) {
     return {
       success: false,
-      message: error.response.data.message || 'Erro ao buscar às fraquezas',
+      message: error?.response?.data?.message || 'Erro ao buscar as fraquezas',
     };
   }
 };
 
-export { getPokemons, getPokemoInfo, getWeaknesses };
+const getEvolutionNames = (chain) => {
+  const names = [];
+  let current = chain;
+
+  while (current) {
+    names.push(current.species.name);
+    current = current.evolves_to[0];
+  }
+
+  return names;
+};
+
+const getEvolutionImages = async (pokemonName) => {
+  try {
+    const pokemonResponse = await api.get(`/pokemon/${pokemonName}`);
+
+    const speciesResponse = await api.get(
+      pokemonResponse.data.species.url.replace('https://pokeapi.co/api/v2', '')
+    );
+
+    const evolutionResponse = await api.get(
+      speciesResponse.data.evolution_chain.url.replace(
+        'https://pokeapi.co/api/v2',
+        ''
+      )
+    );
+
+    const evolutionNames = getEvolutionNames(evolutionResponse.data.chain);
+
+    const evolutions = await Promise.all(
+      evolutionNames.map(async (name) => {
+        const res = await api.get(`/pokemon/${name}`);
+
+        return {
+          name,
+          image: res.data.sprites.other['official-artwork'].front_default,
+        };
+      })
+    );
+
+    console.log(evolutions);
+    return { success: true, data: evolutions };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.response?.data?.message || 'Erro ao buscar as evoluções',
+    };
+  }
+};
+
+export { getPokemons, getPokemoInfo, getWeaknesses, getEvolutionImages };

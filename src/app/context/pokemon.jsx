@@ -5,6 +5,7 @@ import {
   getPokemons,
   getPokemoInfo,
   getWeaknesses,
+  getEvolutionImages,
 } from '../services/pokemonServices';
 import { Toaster, toast } from 'sonner';
 
@@ -15,6 +16,7 @@ export const PokemonContextProvider = ({ children }) => {
   const [dataPokemons, setDataPokemons] = useState([]);
   const [seletedPokemon, setSelectedPokemon] = useState(null);
   const [weaknesses, setWeaknesses] = useState([]);
+  const [evolutions, setEvolutions] = useState([]);
 
   const loadPokemons = async (offset, limit) => {
     const result = await getPokemons(offset, limit);
@@ -42,10 +44,21 @@ export const PokemonContextProvider = ({ children }) => {
 
     if (result.success) {
       setWeaknesses(result.data);
+      await loadEvolution(pokemonName);
     } else {
       toast.error(result.message);
     }
   };
+
+  const loadEvolution = async (pokemonName) => {
+    const result = await getEvolutionImages(pokemonName);
+
+    if (result.success) {
+      setEvolutions(result.data);
+    } else {
+      toast.error(result.message);
+    }
+  }
 
   return (
     <PokemonContext.Provider
@@ -57,6 +70,7 @@ export const PokemonContextProvider = ({ children }) => {
         setSelectedPokemon,
         loadWeaknesses,
         weaknesses,
+        evolutions,
       }}
     >
       {children}

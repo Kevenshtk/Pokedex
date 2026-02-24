@@ -4,8 +4,7 @@ import { PokemonContext } from '../../context/pokemon';
 import { TYPE_COLORS as Colors } from '../../constants';
 
 const Sidebar = ({ pokemon }) => {
-  const { loadWeaknesses, weaknesses } = useContext(PokemonContext);
-
+  const { loadWeaknesses, weaknesses, evolutions, seletedPokemon } = useContext(PokemonContext);
   const EMPOLEON_STATS = [
     {
       label: 'HP',
@@ -195,23 +194,21 @@ const Sidebar = ({ pokemon }) => {
           Evolution
         </h4>
         <div className="flex items-center justify-center space-x-4">
-          <img
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/393.png"
-            alt="evolution one"
-            className="w-10 h-10 grayscale opacity-50"
-          />
-          <i className="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
-          <img
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/394.png"
-            alt="evolution two"
-            className="w-10 h-10 grayscale opacity-50"
-          />
-          <i className="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
-          <img
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/395.png"
-            alt="evolution three"
-            className="w-14 h-14"
-          />
+          {evolutions.map((evolution, index) => {
+            return (
+              <>
+                <img
+                  src={evolution.image}
+                  alt={evolution.name}
+                  className={`w-10 h-10 ${seletedPokemon.name === evolution.name ? '': 'grayscale opacity-50'}`}
+                />
+
+                {evolutions.length - 1 !== index && (
+                  <i className="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
+                )}
+              </>
+            );
+          })}
         </div>
       </div>
 
