@@ -4,14 +4,13 @@ const getPokemons = async (offset = 0, limit = 9) => {
   try {
     const response = await api.get(`/pokemon?offset=${offset}&limit=${limit}`);
 
-    const detailedPokemons = response.data.results.map(async (pokemon) => {
-      const res = await api.get(pokemon.url);
-      return res.data;
-    });
+    const detailedPokemons = await Promise.all(
+      response.data.results.map((pokemon) => api.get(pokemon.url))
+    );
 
     return {
       success: true,
-      data: await Promise.all(detailedPokemons),
+      data: detailedPokemons.map((pokemon) => pokemon.data),
     };
   } catch (error) {
     return {
@@ -47,13 +46,10 @@ const getWeaknesses = async (pokemonName) => {
   try {
     const response = await api.get(`/pokemon/${pokemonName}`);
 
-    const types = response?.data.types.map((t) => t.type.name);
+    const types = response.data.types.map((t) => t.type.name);
 
     const allDamageRelations = await Promise.all(
-      types.map(async (type) => {
-        const resType = await api.get(`/type/${type}`);
-        return resType.data;
-      })
+      types.map((type) => api.get(`/type/${type}`).then(res => res.data))
     );
 
     const weaknesses =
@@ -74,12 +70,16 @@ const getWeaknesses = async (pokemonName) => {
 
 const getEvolutionNames = (chain) => {
   const names = [];
-  let current = chain;
 
-  while (current) {
-    names.push(current.species.name);
-    current = current.evolves_to[0];
-  }
+  const traverse = (node) => {
+    names.push(node.species.name);
+
+    node.evolves_to.forEach((evolution) => {
+      traverse(evolution);
+    });
+  };
+
+  traverse(chain);
 
   return names;
 };
@@ -112,7 +112,6 @@ const getEvolutionImages = async (pokemonName) => {
       })
     );
 
-    console.log(evolutions);
     return { success: true, data: evolutions };
   } catch (error) {
     return {

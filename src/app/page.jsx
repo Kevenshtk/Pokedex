@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { PokemonContext } from './context/pokemon';
 
@@ -10,19 +10,17 @@ import PokemonCard from './components/PokemonCard';
 import SideBar from './components/Sidebar';
 
 export default function Home() {
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const {
     loadPokemons,
     dataPokemons,
     loadMorePokemons,
-    seletedPokemon,
+    selectedPokemon,
     setSelectedPokemon,
   } = useContext(PokemonContext);
 
-  if (isInitialLoad) {
+  useEffect(() => {
     loadPokemons();
-    setIsInitialLoad(false);
-  }
+  }, [loadPokemons]);
 
   return (
     <div className="min-h-screen p-4 md:p-8 relative overflow-x-hidden">
@@ -41,7 +39,7 @@ export default function Home() {
                 <PokemonCard
                   key={pokemon.id}
                   pokemon={pokemon}
-                  isSelected={pokemon.id === seletedPokemon?.id}
+                  isSelected={pokemon.id === selectedPokemon?.id}
                   onClick={() => setSelectedPokemon(pokemon)}
                 />
               ))}
@@ -50,7 +48,7 @@ export default function Home() {
             <div className="mt-12 flex justify-center">
               <button
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-10 rounded-2xl shadow-lg shadow-red-200 transition-all"
-                onClick={() => loadMorePokemons()}
+                onClick={loadMorePokemons}
               >
                 Load More Pokémon
               </button>
@@ -58,7 +56,7 @@ export default function Home() {
           </div>
 
           <div className="lg:col-span-4 mt-20 lg:mt-0">
-            <SideBar pokemon={seletedPokemon} />
+            <SideBar pokemon={selectedPokemon} />
           </div>
         </div>
       </div>

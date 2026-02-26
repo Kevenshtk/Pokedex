@@ -1,58 +1,68 @@
-/* eslint-disable @next/next/no-img-element */
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { PokemonContext } from '../../context/pokemon';
+import Image from 'next/image';
+
+import ImgErro from '../../../../public/triangle-exclamation-solid.svg';
+
 import { TYPE_COLORS as Colors } from '../../constants';
 
 const Sidebar = ({ pokemon }) => {
-  const { loadWeaknesses, weaknesses, evolutions, seletedPokemon } = useContext(PokemonContext);
-  const EMPOLEON_STATS = [
-    {
-      label: 'HP',
-      shortLabel: 'HP',
-      value: pokemon?.stats.hp,
-      color: 'bg-red-500',
-    },
-    {
-      label: 'Attack',
-      shortLabel: 'ATK',
-      value: pokemon?.stats.attack,
-      color: 'bg-orange-500',
-    },
-    {
-      label: 'Defense',
-      shortLabel: 'DEF',
-      value: pokemon?.stats.defense,
-      color: 'bg-yellow-400',
-    },
-    {
-      label: 'Sp. Atk',
-      shortLabel: 'SpA',
-      value: pokemon?.stats.special_attack,
-      color: 'bg-cyan-400',
-    },
-    {
-      label: 'Sp. Def',
-      shortLabel: 'SpD',
-      value: pokemon?.stats.special_defense,
-      color: 'bg-green-400',
-    },
-    {
-      label: 'Speed',
-      shortLabel: 'SPD',
-      value: pokemon?.stats.speed,
-      color: 'bg-pink-400',
-    },
-    {
-      label: 'Total',
-      shortLabel: 'TOT',
-      value: pokemon?.totalStats,
-      color: 'bg-indigo-500',
-    },
-  ];
+  const { loadPokemonDetails, weaknesses, evolutions, selectedPokemon } =
+    useContext(PokemonContext);
+
+  const POKEMON_STATS = useMemo(
+    () => [
+      {
+        label: 'HP',
+        shortLabel: 'HP',
+        value: pokemon?.stats.hp,
+        color: 'bg-red-500',
+      },
+      {
+        label: 'Attack',
+        shortLabel: 'ATK',
+        value: pokemon?.stats.attack,
+        color: 'bg-orange-500',
+      },
+      {
+        label: 'Defense',
+        shortLabel: 'DEF',
+        value: pokemon?.stats.defense,
+        color: 'bg-yellow-400',
+      },
+      {
+        label: 'Sp. Atk',
+        shortLabel: 'SpA',
+        value: pokemon?.stats.special_attack,
+        color: 'bg-cyan-400',
+      },
+      {
+        label: 'Sp. Def',
+        shortLabel: 'SpD',
+        value: pokemon?.stats.special_defense,
+        color: 'bg-green-400',
+      },
+      {
+        label: 'Speed',
+        shortLabel: 'SPD',
+        value: pokemon?.stats.speed,
+        color: 'bg-pink-400',
+      },
+      {
+        label: 'Total',
+        shortLabel: 'TOT',
+        value: pokemon?.totalStats,
+        color: 'bg-indigo-500',
+      },
+    ],
+    [pokemon]
+  );
 
   useEffect(() => {
-    loadWeaknesses(pokemon?.name);
-  }, [pokemon?.name]);
+    if (!pokemon?.name) return;
+
+    loadPokemonDetails(pokemon?.name);
+  }, [pokemon?.name, loadPokemonDetails]);
 
   return (
     <div className="bg-white rounded-[40px] shadow-lg p-8 h-fit sticky top-6">
@@ -65,10 +75,12 @@ const Sidebar = ({ pokemon }) => {
             <i className="fa-solid fa-venus"></i>
           </div>
         </div>
-        <img
-          src={pokemon?.image}
-          alt={pokemon?.name}
-          className="w-48 h-48 object-contain drop-shadow-2xl -mt-20 z-10"
+        <Image
+          src={pokemon?.image || ImgErro}
+          alt={pokemon?.name || 'Pokemon'}
+          className="object-contain drop-shadow-2xl -mt-20 z-10"
+          width={192}
+          height={192}
         />
       </div>
 
@@ -129,7 +141,7 @@ const Sidebar = ({ pokemon }) => {
             Height
           </h4>
           <span className="text-lg font-bold text-gray-700">
-            {pokemon?.height.toString().replace('.', ',')}m
+            {pokemon?.height?.toString().replace('.', ',')}m
           </span>
         </div>
         <div>
@@ -137,7 +149,7 @@ const Sidebar = ({ pokemon }) => {
             Weight
           </h4>
           <span className="text-lg font-bold text-gray-700">
-            {pokemon?.weight.toString().replace('.', ',')}kg
+            {pokemon?.weight?.toString().replace('.', ',')}kg
           </span>
         </div>
         <div>
@@ -168,7 +180,7 @@ const Sidebar = ({ pokemon }) => {
           Stats
         </h4>
         <div className="flex justify-between items-end gap-1 px-2">
-          {EMPOLEON_STATS.map((stat, idx) => (
+          {POKEMON_STATS.map((stat, idx) => (
             <div key={idx} className="flex flex-col items-center flex-1">
               <div className="w-full h-24 bg-gray-100 rounded-full relative mb-2 overflow-hidden flex flex-col justify-end">
                 <div
@@ -193,20 +205,22 @@ const Sidebar = ({ pokemon }) => {
         <h4 className="text-center font-bold text-xs uppercase text-gray-800 mb-4 tracking-widest">
           Evolution
         </h4>
-        <div className="flex items-center justify-center space-x-4">
+        <div className="flex items-center justify-center flex-wrap space-x-4">
           {evolutions.map((evolution, index) => {
             return (
-              <>
-                <img
+              <div key={index} className="flex items-center gap-3">
+                <Image
                   src={evolution.image}
                   alt={evolution.name}
-                  className={`w-10 h-10 ${seletedPokemon.name === evolution.name ? '': 'grayscale opacity-50'}`}
+                  className={`${selectedPokemon?.name === evolution.name ? '' : 'grayscale opacity-50'}`}
+                  width={40}
+                  height={40}
                 />
 
                 {evolutions.length - 1 !== index && (
                   <i className="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>
                 )}
-              </>
+              </div>
             );
           })}
         </div>

@@ -1,42 +1,41 @@
 'use client';
 import { createContext } from 'react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   getPokemons,
   getPokemoInfo,
   getWeaknesses,
   getEvolutionImages,
 } from '../services/pokemonServices';
-import { Toaster, toast } from 'sonner';
+import { toast } from 'sonner';
 
 export const PokemonContext = createContext();
 
 export const PokemonContextProvider = ({ children }) => {
   const [fetchLimit, setFetchLimit] = useState(9);
   const [dataPokemons, setDataPokemons] = useState([]);
-  const [seletedPokemon, setSelectedPokemon] = useState(null);
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [weaknesses, setWeaknesses] = useState([]);
   const [evolutions, setEvolutions] = useState([]);
 
-  const loadPokemons = async (offset, limit) => {
+  const loadPokemons = useCallback(async (offset, limit) => {
     const result = await getPokemons(offset, limit);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
     const pokemons = await getPokemoInfo(result);
 
-    if (result.success) {
-      setDataPokemons(pokemons);
-      setSelectedPokemon(pokemons[0]);
-    } else {
-      toast.error(result.message);
-    }
-  };
+    setDataPokemons(pokemons);
+    setSelectedPokemon(pokemons[0]);
+  }, []);
 
-  const loadMorePokemons = () => {
-    setFetchLimit((prevLimit) => {
-      const updatedLimit = prevLimit + 9;
-
-      loadPokemons(0, updatedLimit);
-      return updatedLimit;
-    });
+  const loadMorePokemons = async () => {
+    const updatedLimit = fetchLimit + 9;
+    setFetchLimit(updatedLimit);
+    await loadPokemons(0, updatedLimit);
   };
 
   const loadWeaknesses = async (pokemonName) => {
@@ -44,7 +43,6 @@ export const PokemonContextProvider = ({ children }) => {
 
     if (result.success) {
       setWeaknesses(result.data);
-      await loadEvolution(pokemonName);
     } else {
       toast.error(result.message);
     }
@@ -58,7 +56,14 @@ export const PokemonContextProvider = ({ children }) => {
     } else {
       toast.error(result.message);
     }
-  }
+  };
+
+  const loadPokemonDetails = async (pokemonName) => {
+    await Promise.all([
+      loadWeaknesses(pokemonName),
+      loadEvolution(pokemonName),
+    ]);
+  };
 
   return (
     <PokemonContext.Provider
@@ -66,9 +71,9 @@ export const PokemonContextProvider = ({ children }) => {
         loadPokemons,
         dataPokemons,
         loadMorePokemons,
-        seletedPokemon,
+        selectedPokemon,
         setSelectedPokemon,
-        loadWeaknesses,
+        loadPokemonDetails,
         weaknesses,
         evolutions,
       }}
