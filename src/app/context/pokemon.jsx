@@ -12,14 +12,15 @@ import { toast } from 'sonner';
 export const PokemonContext = createContext();
 
 export const PokemonContextProvider = ({ children }) => {
-  const [fetchLimit, setFetchLimit] = useState(9);
   const [dataPokemons, setDataPokemons] = useState([]);
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [weaknesses, setWeaknesses] = useState([]);
   const [evolutions, setEvolutions] = useState([]);
 
-  const loadPokemons = useCallback(async (offset, limit) => {
-    const result = await getPokemons(offset, limit);
+  const pageSize = 9;
+
+  const loadPokemons = useCallback(async (offset = 0) => {
+    const result = await getPokemons(offset, pageSize);
 
     if (!result.success) {
       toast.error(result.message);
@@ -28,17 +29,19 @@ export const PokemonContextProvider = ({ children }) => {
 
     const pokemons = await getPokemoInfo(result);
 
-    setDataPokemons(pokemons);
-    setSelectedPokemon(pokemons[0]);
+    setDataPokemons((prev) => [...prev, ...pokemons]);
+
+    if (offset === 0 && pokemons.length > 0) {
+      setSelectedPokemon(pokemons[0]);
+    }
   }, []);
 
   const loadMorePokemons = async () => {
-    const updatedLimit = fetchLimit + 9;
-    setFetchLimit(updatedLimit);
-    await loadPokemons(0, updatedLimit);
+    const newOffset = dataPokemons.length;
+    await loadPokemons(newOffset);
   };
 
-  const loadWeaknesses = async (pokemonName) => {
+  const loadWeaknesses = useCallback(async (pokemonName) => {
     const result = await getWeaknesses(pokemonName);
 
     if (result.success) {
@@ -46,9 +49,9 @@ export const PokemonContextProvider = ({ children }) => {
     } else {
       toast.error(result.message);
     }
-  };
+  }, []);
 
-  const loadEvolution = async (pokemonName) => {
+  const loadEvolution = useCallback(async (pokemonName) => {
     const result = await getEvolutionImages(pokemonName);
 
     if (result.success) {
@@ -56,14 +59,14 @@ export const PokemonContextProvider = ({ children }) => {
     } else {
       toast.error(result.message);
     }
-  };
+  }, []);
 
-  const loadPokemonDetails = async (pokemonName) => {
+  const loadPokemonDetails = useCallback(async (pokemonName) => {
     await Promise.all([
       loadWeaknesses(pokemonName),
       loadEvolution(pokemonName),
     ]);
-  };
+  }, [loadWeaknesses, loadEvolution]);
 
   return (
     <PokemonContext.Provider
