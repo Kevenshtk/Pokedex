@@ -6,7 +6,13 @@ const filterButtons = [
   { icon: "fa-weight-hanging", label: "Weight" },
 ];
 
-const Filters = () => {
+type FiltersProps = {
+  from: number;
+  to: number;
+  total: number;
+};
+
+const Filters = ({from, to, total}: FiltersProps) => {
   return (
     <div className="space-y-4 mb-8">
       <div className="relative">
@@ -29,18 +35,7 @@ const Filters = () => {
         <div className="grow"></div>
 
         <div className="flex items-center space-x-2">
-          <span>from</span>
-          <input
-            type="number"
-            defaultValue={387}
-            className="w-16 bg-gray-200 border-none rounded-lg px-2 py-1 text-center focus:outline-none"
-          />
-          <span>to</span>
-          <input
-            type="number"
-            defaultValue={395}
-            className="w-16 bg-gray-200 border-none rounded-lg px-2 py-1 text-center focus:outline-none"
-          />
+          Showing {from}–{to} of {total} Pokémons
         </div>
       </div>
 

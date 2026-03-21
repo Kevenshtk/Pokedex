@@ -17,7 +17,7 @@ export const PokemonContextProvider = ({ children }) => {
   const [weaknesses, setWeaknesses] = useState([]);
   const [evolutions, setEvolutions] = useState([]);
 
-  const pageSize = 9;
+  const pageSize = 36;
 
   const loadPokemons = useCallback(async (offset = 0) => {
     const result = await getPokemons(offset, pageSize);
@@ -34,11 +34,13 @@ export const PokemonContextProvider = ({ children }) => {
     if (offset === 0 && pokemons.length > 0) {
       setSelectedPokemon(pokemons[0]);
     }
+
+    return pokemons;
   }, []);
 
   const loadMorePokemons = async () => {
     const newOffset = dataPokemons.length;
-    await loadPokemons(newOffset);
+    return await loadPokemons(newOffset);
   };
 
   const loadWeaknesses = useCallback(async (pokemonName) => {
