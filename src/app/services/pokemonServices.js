@@ -121,4 +121,28 @@ const getEvolutionImages = async (pokemonName) => {
   }
 };
 
-export { getPokemons, getPokemoInfo, getWeaknesses, getEvolutionImages };
+const getPokemonSpecies = async (name) => {
+  try {
+    const res = await api.get(`/pokemon-species/${name}`);
+
+    const genus = res.data.genera.find(
+      (g) => g.language.name === 'en'
+    )?.genus;
+
+    const entry = res.data.flavor_text_entries.find(
+      (f) => f.language.name === 'en'
+    )?.flavor_text.replace(/\f/g, ' ');
+
+    return {
+      success: true,
+      data: { genus, entry },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.response?.data?.message || 'Erro ao buscar species',
+    };
+  }
+};
+
+export { getPokemons, getPokemoInfo, getWeaknesses, getEvolutionImages, getPokemonSpecies };

@@ -7,7 +7,7 @@ import ImgErro from '../../../../public/triangle-exclamation-solid.svg';
 import { TYPE_COLORS as Colors } from '../../constants';
 
 const Sidebar = ({ pokemon }) => {
-  const { loadPokemonDetails, weaknesses, evolutions, selectedPokemon } =
+  const { loadPokemonDetails, weaknesses, evolutions, selectedPokemon, species } =
     useContext(PokemonContext);
 
   const POKEMON_STATS = useMemo(
@@ -89,7 +89,7 @@ const Sidebar = ({ pokemon }) => {
         <h2 className="text-3xl font-extrabold text-gray-800 capitalize">
           {pokemon?.name}
         </h2>
-        <p className="text-gray-400 text-sm font-medium">Emperor Pokémon</p>
+        <p className="text-gray-400 text-sm font-medium">{species?.genus}</p>
       </div>
 
       <div className="flex justify-center gap-2 mb-6">
@@ -110,8 +110,7 @@ const Sidebar = ({ pokemon }) => {
           Pokédex Entry
         </h4>
         <p className="text-center text-sm text-gray-500 leading-relaxed px-4">
-          It swims as fast as a jet boat. The edges of its wings are sharp and
-          can slice apart drifting ice.
+          {species?.entry}
         </p>
       </div>
 
