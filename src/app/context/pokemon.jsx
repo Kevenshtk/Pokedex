@@ -1,14 +1,8 @@
 'use client';
 import { createContext } from 'react';
 import { useState, useCallback } from 'react';
-import {
-  getPokemons,
-  getPokemonsByName,
-  getPokemoInfo,
-  getWeaknesses,
-  getEvolutionImages,
-  getPokemonSpecies,
-} from '../services/pokemonServices';
+import pokemonServices from '../services/pokemonServices';
+
 import { toast } from 'sonner';
 
 export const PokemonContext = createContext();
@@ -23,14 +17,14 @@ export const PokemonContextProvider = ({ children }) => {
   const pageSize = 36;
 
   const loadPokemons = useCallback(async (offset = 0) => {
-    const result = await getPokemons(offset, pageSize);
+    const result = await pokemonServices.get(offset, pageSize);
 
     if (!result.success) {
       toast.error(result.message);
       return;
     }
 
-    const pokemons = await getPokemoInfo(result);
+    const pokemons = result.data;
 
     setDataPokemons((prev) => [...prev, ...pokemons]);
 
@@ -47,27 +41,19 @@ export const PokemonContextProvider = ({ children }) => {
   };
 
   const loadWeaknesses = useCallback(async (pokemonName) => {
-    const result = await getWeaknesses(pokemonName);
+    const result = await pokemonServices.getWeakness(pokemonName);
 
-    if (result.success) {
-      setWeaknesses(result.data);
-    } else {
-      toast.error(result.message);
-    }
+    setWeaknesses(result.data);
   }, []);
 
   const loadEvolution = useCallback(async (pokemonName) => {
-    const result = await getEvolutionImages(pokemonName);
+    const result = await pokemonServices.getEvo(pokemonName);
 
-    if (result.success) {
-      setEvolutions(result.data);
-    } else {
-      toast.error(result.message);
-    }
+    setEvolutions(result.data);
   }, []);
 
   const loadSpecies = async (name) => {
-    const result = await getPokemonSpecies(name);
+    const result = await pokemonServices.getSpecies(name);
 
     if (result.success) {
       setSpecies(result.data);
@@ -78,20 +64,22 @@ export const PokemonContextProvider = ({ children }) => {
 
   const loadPokemonDetails = useCallback(
     async (pokemonName) => {
-      await Promise.all([
-        loadSpecies(pokemonName),
-        loadWeaknesses(pokemonName),
-        loadEvolution(pokemonName),
-      ]);
+      const result = await pokemonServices.getByName(pokemonName);
+
+      if (result.success) {
+        await loadSpecies(pokemonName);
+        loadWeaknesses(result.raw);
+        loadEvolution(result.raw);
+      }
     },
     [loadWeaknesses, loadEvolution]
   );
 
   const selectPokemonByEvo = async (nome) => {
-    const result = await getPokemonsByName(nome);
+    const result = await pokemonServices.getByName(nome);
 
     setSelectedPokemon(result.data);
-  }
+  };
 
   return (
     <PokemonContext.Provider
