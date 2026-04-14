@@ -3,6 +3,7 @@ import { createContext } from 'react';
 import { useState, useCallback } from 'react';
 import {
   getPokemons,
+  getPokemonsByName,
   getPokemoInfo,
   getWeaknesses,
   getEvolutionImages,
@@ -86,6 +87,12 @@ export const PokemonContextProvider = ({ children }) => {
     [loadWeaknesses, loadEvolution]
   );
 
+  const selectPokemonByEvo = async (nome) => {
+    const result = await getPokemonsByName(nome);
+
+    setSelectedPokemon(result.data);
+  }
+
   return (
     <PokemonContext.Provider
       value={{
@@ -98,6 +105,7 @@ export const PokemonContextProvider = ({ children }) => {
         weaknesses,
         evolutions,
         species,
+        selectPokemonByEvo,
       }}
     >
       {children}

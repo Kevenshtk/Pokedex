@@ -7,8 +7,14 @@ import ImgErro from '../../../../public/triangle-exclamation-solid.svg';
 import { TYPE_COLORS as Colors } from '../../constants';
 
 const Sidebar = ({ pokemon }) => {
-  const { loadPokemonDetails, weaknesses, evolutions, selectedPokemon, species } =
-    useContext(PokemonContext);
+  const {
+    loadPokemonDetails,
+    weaknesses,
+    evolutions,
+    selectedPokemon,
+    species,
+    selectPokemonByEvo
+  } = useContext(PokemonContext);
 
   const POKEMON_STATS = useMemo(
     () => [
@@ -58,9 +64,15 @@ const Sidebar = ({ pokemon }) => {
     [pokemon]
   );
 
+  const currentIndex = useMemo(() => {
+    return evolutions.findIndex((evo) => evo.name === selectedPokemon?.name);
+  }, [evolutions, selectedPokemon?.name]);
+
+  const prev = evolutions[currentIndex - 1];
+  const next = evolutions[currentIndex + 1];
+
   useEffect(() => {
     if (!pokemon?.name) return;
-
     loadPokemonDetails(pokemon?.name);
   }, [pokemon?.name, loadPokemonDetails]);
 
@@ -227,12 +239,24 @@ const Sidebar = ({ pokemon }) => {
 
       <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-100">
         <button className="flex items-center space-x-2 text-gray-400 hover:text-gray-600 transition-colors">
-          <i className="fa-solid fa-chevron-left text-xs"></i>
-          <span className="text-xs font-bold">Prinplup #394</span>
+          {prev && (
+            <>
+              <i className="fa-solid fa-chevron-left text-xs"></i>
+              <span className="text-xs font-bold cursor-pointer" onClick={() => selectPokemonByEvo(prev.name)}>
+                {prev.name}
+              </span>
+            </>
+          )}
         </button>
         <button className="flex items-center space-x-2 text-gray-400 hover:text-gray-600 transition-colors">
-          <span className="text-xs font-bold">#396 Starly</span>
-          <i className="fa-solid fa-chevron-right text-xs"></i>
+          {next && (
+            <>
+              <span className="text-xs font-bold cursor-pointer" onClick={() => selectPokemonByEvo(next.name)}>
+                {next.name}
+              </span>
+              <i className="fa-solid fa-chevron-right text-xs"></i>
+            </>
+          )}
         </button>
       </div>
     </div>
