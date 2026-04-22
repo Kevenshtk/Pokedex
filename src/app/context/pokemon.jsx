@@ -43,11 +43,21 @@ export const PokemonContextProvider = ({ children }) => {
   const loadWeaknesses = useCallback(async (pokemonName) => {
     const result = await pokemonServices.getWeakness(pokemonName);
 
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
     setWeaknesses(result.data);
   }, []);
 
   const loadEvolution = useCallback(async (pokemonName) => {
     const result = await pokemonServices.getEvo(pokemonName);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
 
     setEvolutions(result.data);
   }, []);
@@ -55,11 +65,13 @@ export const PokemonContextProvider = ({ children }) => {
   const loadSpecies = async (name) => {
     const result = await pokemonServices.getSpecies(name);
 
-    if (result.success) {
-      setSpecies(result.data);
-    } else {
+    if (!result.success) {
       toast.error(result.message);
+      return;
     }
+
+    setSpecies(result.data);
+ 
   };
 
   const loadPokemonDetails = useCallback(
@@ -75,7 +87,7 @@ export const PokemonContextProvider = ({ children }) => {
     [loadWeaknesses, loadEvolution]
   );
 
-    const searchPokemon = useCallback(
+  const searchPokemon = useCallback(
     async (pokemonName) => {
       const result = await pokemonServices.getByName(pokemonName);
 

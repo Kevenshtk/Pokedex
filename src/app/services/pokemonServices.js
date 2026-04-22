@@ -59,23 +59,31 @@ const formatPokemon = (item) => {
 };
 
 const getWeaknesses = async (pokemon) => {
-  const types = pokemon.types.map((t) => t.type.name);
+  try {
+    const types = pokemon.types.map((t) => t.type.name);
 
-  const allDamageRelations = await Promise.all(
-    types.map((type) => api.get(`/type/${type}`).then((res) => res.data))
-  );
-
-  const weaknesses =
-    allDamageRelations[0].damage_relations.double_damage_from.map(
-      (damage_relations) => {
-        return damage_relations.name;
-      }
+    const allDamageRelations = await Promise.all(
+      types.map((type) => api.get(`/type/${type}`).then((res) => res.data))
     );
 
-  return { success: true, data: weaknesses };
+    const weaknesses =
+      allDamageRelations[0].damage_relations.double_damage_from.map(
+        (damage_relations) => {
+          return damage_relations.name;
+        }
+      );
+
+    return { success: true, data: weaknesses };
+  } catch (error) {
+    return handleError(error, 'Erro ao buscar fraquezas');
+  }
 };
 
 const getEvolutionNames = (chain) => {
+  if (!chain) {
+    throw new Error('Invalid evolution chain');
+  }
+
   const names = [];
 
   const traverse = (node) => {
@@ -92,42 +100,49 @@ const getEvolutionNames = (chain) => {
 };
 
 const getEvolutionImages = async (pokemon) => {
-  const speciesResponse = await api.get(
-    pokemon.species.url.replace('https://pokeapi.co/api/v2', '')
-  );
+  try {
+    const speciesResponse = await api.get(
+      pokemon.species.url.replace('https://pokeapi.co/api/v2', '')
+    );
 
-  const evolutionResponse = await api.get(
-    speciesResponse.data.evolution_chain.url.replace(
-      'https://pokeapi.co/api/v2',
-      ''
-    )
-  );
+    const evolutionResponse = await api.get(
+      speciesResponse.data.evolution_chain.url.replace(
+        'https://pokeapi.co/api/v2',
+        ''
+      )
+    );
 
-  const evolutionNames = getEvolutionNames(evolutionResponse.data.chain);
+    const evolutionNames = getEvolutionNames(evolutionResponse.data.chain);
 
-  const evolutions = await Promise.all(
-    evolutionNames.map(async (name) => {
-      const res = await api.get(`/pokemon/${name}`);
+    const evolutions = await Promise.all(
+      evolutionNames.map(async (name) => {
+        const res = await api.get(`/pokemon/${name}`);
 
-      return {
-        name,
-        image: res.data.sprites.other['official-artwork'].front_default,
-      };
-    })
-  );
+        return {
+          name,
+          image: res.data.sprites.other['official-artwork'].front_default,
+        };
+      })
+    );
 
-  return { success: true, data: evolutions };
+    return { success: true, data: evolutions };
+  } catch (error) {
+    return handleError(error, 'Erro ao buscar evoluções');
+  }
 };
 
 const getPokemonSpecies = async (name) => {
   try {
     const res = await api.get(`/pokemon-species/${name}`);
 
-    const genus = res.data.genera.find((g) => g.language.name === 'en')?.genus || 'Unknown Pokemon';
+    const genus =
+      res.data.genera.find((g) => g.language.name === 'en')?.genus ||
+      'Unknown Pokemon';
 
-    const entry = res.data.flavor_text_entries
-      .find((f) => f.language.name === 'en')
-      ?.flavor_text.replace(/\f/g, ' ') || 'No description available.';
+    const entry =
+      res.data.flavor_text_entries
+        .find((f) => f.language.name === 'en')
+        ?.flavor_text.replace(/\f/g, ' ') || 'No description available.';
 
     return {
       success: true,
