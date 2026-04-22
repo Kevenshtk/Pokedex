@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { PokemonContext } from "../../context/pokemon";
+
 const filterButtons = [
   { label: "Type", icon: "fa-circle" },
   { icon: "fa-skull-crossbones", label: "Weaknesses" },
@@ -13,12 +16,22 @@ type FiltersProps = {
 };
 
 const Filters = ({from, to, total}: FiltersProps) => {
+
+const { searchPokemon } = useContext(PokemonContext);
+
+const handleSearch = async (name: string) => {
+  await searchPokemon(name);
+}
+
   return (
     <div className="space-y-4 mb-8">
       <div className="relative">
         <input
           type="text"
-          placeholder="Pesquise seu Pokémon!"
+          placeholder="Discover your Pokémon!"
+          onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch(e.currentTarget.value);
+              }}
           className="w-full bg-white rounded-xl py-4 px-6 shadow-sm focus:outline-none text-gray-600 placeholder-gray-300"
         />
         <div className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center cursor-pointer shadow-md shadow-red-200">

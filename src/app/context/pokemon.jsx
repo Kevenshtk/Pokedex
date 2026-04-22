@@ -75,6 +75,20 @@ export const PokemonContextProvider = ({ children }) => {
     [loadWeaknesses, loadEvolution]
   );
 
+    const searchPokemon = useCallback(
+    async (pokemonName) => {
+      const result = await pokemonServices.getByName(pokemonName);
+
+      if (result.success) {
+        setSelectedPokemon(result.data);
+        await loadSpecies(pokemonName);
+        loadWeaknesses(result.raw);
+        loadEvolution(result.raw);
+      }
+    },
+    [loadWeaknesses, loadEvolution]
+  );
+
   const selectPokemonByEvo = async (nome) => {
     const result = await pokemonServices.getByName(nome);
 
@@ -94,6 +108,7 @@ export const PokemonContextProvider = ({ children }) => {
         evolutions,
         species,
         selectPokemonByEvo,
+        searchPokemon,
       }}
     >
       {children}
