@@ -1,12 +1,12 @@
-import { useContext } from "react";
-import { PokemonContext } from "../../context/pokemon";
+import { useState, useContext } from 'react';
+import { PokemonContext } from '../../context/pokemon';
 
 const filterButtons = [
-  { label: "Type", icon: "fa-circle" },
-  { icon: "fa-skull-crossbones", label: "Weaknesses" },
-  { icon: "fa-bolt", label: "Ability" },
-  { icon: "fa-arrows-up-down", label: "Height" },
-  { icon: "fa-weight-hanging", label: "Weight" },
+  { label: 'Type', icon: 'fa-circle' },
+  { icon: 'fa-skull-crossbones', label: 'Weaknesses' },
+  { icon: 'fa-bolt', label: 'Ability' },
+  { icon: 'fa-arrows-up-down', label: 'Height' },
+  { icon: 'fa-weight-hanging', label: 'Weight' },
 ];
 
 type FiltersProps = {
@@ -15,13 +15,13 @@ type FiltersProps = {
   total: number;
 };
 
-const Filters = ({from, to, total}: FiltersProps) => {
+const Filters = ({ from, to, total }: FiltersProps) => {
+  const [search, setSearch] = useState('');
+  const { searchPokemon } = useContext(PokemonContext);
 
-const { searchPokemon } = useContext(PokemonContext);
-
-const handleSearch = async (name: string) => {
-  await searchPokemon(name);
-}
+  const handleSearch = async (name: string) => {
+    await searchPokemon(name);
+  };
 
   return (
     <div className="space-y-4 mb-8">
@@ -29,14 +29,19 @@ const handleSearch = async (name: string) => {
         <input
           type="text"
           placeholder="Discover your Pokémon!"
+          value={search}
+          onChange={(e) => setSearch(e.currentTarget.value)}
           onKeyDown={(e) => {
-                if (e.key === "Enter") handleSearch(e.currentTarget.value);
-              }}
+            if (e.key === 'Enter') handleSearch(search);
+          }}
           className="w-full bg-white rounded-xl py-4 px-6 shadow-sm focus:outline-none text-gray-600 placeholder-gray-300"
         />
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center cursor-pointer shadow-md shadow-red-200">
+        <button 
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center cursor-pointer shadow-md shadow-red-200 hover:bg-red-600 transition-colors"
+        onClick={() => handleSearch(search)}
+        >
           <div className="w-5 h-5 rounded-full border-2 border-white relative flex items-center justify-center after:contet-[''] after:absolute after:h-0.5 after:w-full after:bg-white"></div>
-        </div>
+        </button>
       </div>
 
       <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500">

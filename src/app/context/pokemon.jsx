@@ -71,7 +71,6 @@ export const PokemonContextProvider = ({ children }) => {
     }
 
     setSpecies(result.data);
- 
   };
 
   const loadPokemonDetails = useCallback(
@@ -89,14 +88,24 @@ export const PokemonContextProvider = ({ children }) => {
 
   const searchPokemon = useCallback(
     async (pokemonName) => {
+      if (!pokemonName) {
+        toast.error('Por favor, insira o nome de um Pokémon.');
+        return;
+      }
+
       const result = await pokemonServices.getByName(pokemonName);
 
-      if (result.success) {
-        setSelectedPokemon(result.data);
-        await loadSpecies(pokemonName);
-        loadWeaknesses(result.raw);
-        loadEvolution(result.raw);
+      if (!result.success) {
+        toast.error(
+          'Pokémon não encontrado, verifique o nome e tente novamente.'
+        );
+        return;
       }
+
+      setSelectedPokemon(result.data);
+      await loadSpecies(pokemonName);
+      loadWeaknesses(result.raw);
+      loadEvolution(result.raw);
     },
     [loadWeaknesses, loadEvolution]
   );
