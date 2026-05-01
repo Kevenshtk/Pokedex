@@ -38,6 +38,24 @@ const getPokemonByName = async (name) => {
   }
 };
 
+const getPokemonByType = async (type) => {
+  try {
+    const response = await api.get(`/type/${type}`);
+
+    const detailedPokemons = await Promise.all(
+      response.data.pokemon.map((p) => api.get(p.pokemon.url))
+    );
+
+    return{
+      success: true,
+      data: detailedPokemons.map((pokemon) => formatPokemon(pokemon.data)),
+    }
+
+  } catch(error){
+    return handleError(error, 'Erro ao buscar Pokemons por tipo');
+  }
+}
+
 const formatPokemon = (item) => {
   return {
     id: item.id,
@@ -156,6 +174,7 @@ const getPokemonSpecies = async (name) => {
 const pokemonServices = {
   get: getPokemons,
   getByName: getPokemonByName,
+  getByType: getPokemonByType,
   getWeakness: getWeaknesses,
   getEvo: getEvolutionImages,
   getSpecies: getPokemonSpecies,

@@ -110,6 +110,24 @@ export const PokemonContextProvider = ({ children }) => {
     [loadWeaknesses, loadEvolution]
   );
 
+  const filterPokemonByType = async (type) => {
+    const result = await pokemonServices.getByType(type);
+
+    if (!result.success){
+      toast.error(result.message);
+      return;
+    }
+
+    const pokemons = result.data;
+
+    setDataPokemons([...pokemons]);
+  };
+
+  const clearFilters = async () => {
+    setDataPokemons([]);
+    await loadPokemons();
+  };
+
   const selectPokemonByEvo = async (nome) => {
     const result = await pokemonServices.getByName(nome);
 
@@ -130,6 +148,8 @@ export const PokemonContextProvider = ({ children }) => {
         species,
         selectPokemonByEvo,
         searchPokemon,
+        filterPokemonByType,
+        clearFilters,
       }}
     >
       {children}
