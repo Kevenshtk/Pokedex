@@ -64,9 +64,8 @@ const Filters = ({ from, to, total }: FiltersProps) => {
 
       <div className="flex flex-wrap items-center gap-2 relative">
         {contentBtn.map((btn, index) => (
-          <>
+          <div key={index}>
             <button
-              key={index}
               className="flex items-center space-x-2 bg-white px-4 py-2 rounded-xl shadow-sm hover:bg-gray-50 transition-colors cursor-pointer"
               onClick={() => {
                 if (btn.label === 'Type') {
@@ -87,7 +86,7 @@ const Filters = ({ from, to, total }: FiltersProps) => {
                 setOpenDropdown={setOpenDropdown}
               />
             )}
-          </>
+          </div>
         ))}
 
         <button
