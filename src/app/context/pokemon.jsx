@@ -13,6 +13,7 @@ export const PokemonContextProvider = ({ children }) => {
   const [weaknesses, setWeaknesses] = useState([]);
   const [evolutions, setEvolutions] = useState([]);
   const [species, setSpecies] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const pageSize = 36;
 
@@ -75,13 +76,15 @@ export const PokemonContextProvider = ({ children }) => {
 
   const loadPokemonDetails = useCallback(
     async (pokemonName) => {
+      setLoadingDetails(true);
       const result = await pokemonServices.getByName(pokemonName);
 
       if (result.success) {
         await loadSpecies(pokemonName);
-        loadWeaknesses(result.raw);
-        loadEvolution(result.raw);
+        await loadWeaknesses(result.raw);
+        await loadEvolution(result.raw);
       }
+      setLoadingDetails(false);
     },
     [loadWeaknesses, loadEvolution]
   );
@@ -93,19 +96,22 @@ export const PokemonContextProvider = ({ children }) => {
         return;
       }
 
+      setLoadingDetails(true);
       const result = await pokemonServices.getByName(pokemonName);
 
       if (!result.success) {
         toast.error(
           'Pokémon não encontrado, verifique o nome e tente novamente.'
         );
+        setLoadingDetails(false);
         return;
       }
 
       setSelectedPokemon(result.data);
       await loadSpecies(pokemonName);
-      loadWeaknesses(result.raw);
-      loadEvolution(result.raw);
+      await loadWeaknesses(result.raw);
+      await loadEvolution(result.raw);
+      setLoadingDetails(false);
     },
     [loadWeaknesses, loadEvolution]
   );
@@ -143,6 +149,7 @@ export const PokemonContextProvider = ({ children }) => {
         selectedPokemon,
         setSelectedPokemon,
         loadPokemonDetails,
+        loadingDetails,
         weaknesses,
         evolutions,
         species,

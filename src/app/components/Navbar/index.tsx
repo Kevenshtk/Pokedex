@@ -18,7 +18,7 @@ const Navbar = () => {
         {menuItems.map((item, index) => (
           <button
             key={index}
-            className={`flex items-center space-x-2 px-3 py-4 border-b-2 transition-colors whitespace-nowrap ${item.active ? "border-red-500 text-red-500" : "border-transparent text-gray-400 hover:text-gray-600"}`}
+            className={`flex items-center space-x-2 px-3 py-4 border-b-2 transition-colors whitespace-nowrap cursor-pointer ${item.active ? "border-red-500 text-red-500" : "border-transparent text-gray-400 hover:text-gray-600"}`}
             onClick={() => toast.info('Funcionalidade indisponível!')}
           >
             <i className={`fa-solid ${item.icon} text-lg`}></i>

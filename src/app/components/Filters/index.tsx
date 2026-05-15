@@ -42,7 +42,7 @@ const Filters = ({ from, to, total }: FiltersProps) => {
           className="w-full bg-white rounded-xl py-4 px-6 shadow-sm focus:outline-none text-gray-600 placeholder-gray-300"
         />
         <button
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center cursor-pointer shadow-md shadow-red-200 hover:bg-red-600 transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center cursor-pointer shadow-md shadow-gray-300 hover:bg-red-600 transition-colors"
           onClick={() => handleSearch(search)}
         >
           <div className="w-5 h-5 rounded-full border-2 border-white relative flex items-center justify-center after:contet-[''] after:absolute after:h-0.5 after:w-full after:bg-white"></div>
