@@ -1,5 +1,12 @@
 import api from './api';
 
+const handleError = (error, fallback) => {
+  return {
+    success: false,
+    message: error?.response?.data?.message || fallback,
+  };
+};
+
 const getPokemons = async (offset = 0, limit = 9) => {
   try {
     const response = await api.get(`/pokemon?offset=${offset}&limit=${limit}`);
@@ -10,46 +17,71 @@ const getPokemons = async (offset = 0, limit = 9) => {
 
     return {
       success: true,
-      data: detailedPokemons.map((pokemon) => pokemon.data),
+      data: detailedPokemons.map((pokemon) => formatPokemon(pokemon.data)),
     };
   } catch (error) {
-    return {
-      success: false,
-      message: error?.response?.data?.message || 'Erro ao buscar os Pokemons',
-    };
+    return handleError(error, 'Erro ao buscar os Pokemons');
   }
 };
 
-const getPokemoInfo = async (datas) => {
-  const pokemonList = datas.data.map((item) => {
-    return {
-      id: item.id,
-      name: item.name,
-      image: item.sprites.front_default,
-      types: item.types.map((type) => type.type.name),
-      abilities: item.abilities.map((ability) => ability.ability.name),
-      height: item.height / 10,
-      weight: item.weight / 10,
-      baseExp: item.base_experience,
-      stats: item.stats.reduce((acc, stat) => {
-        acc[stat.stat.name.replace('-', '_')] = stat.base_stat;
-        return acc;
-      }, {}),
-      totalStats: item.stats.reduce((acc, cur) => acc + cur.base_stat, 0),
-    };
-  });
+const getPokemonByName = async (name) => {
+  try {
+    const response = await api.get(`/pokemon/${name}`);
 
-  return pokemonList;
+    return {
+      success: true,
+      data: formatPokemon(response.data),
+      raw: response.data,
+    };
+  } catch (error) {
+    return handleError(error, 'Erro ao buscar informações do Pokemon');
+  }
 };
 
-const getWeaknesses = async (pokemonName) => {
+const getPokemonByType = async (type) => {
   try {
-    const response = await api.get(`/pokemon/${pokemonName}`);
+    const response = await api.get(`/type/${type}`);
 
-    const types = response.data.types.map((t) => t.type.name);
+    const detailedPokemons = await Promise.all(
+      response.data.pokemon.map((p) => api.get(p.pokemon.url))
+    );
+
+    return{
+      success: true,
+      data: detailedPokemons.map((pokemon) => formatPokemon(pokemon.data)),
+    }
+
+  } catch(error){
+    return handleError(error, 'Erro ao buscar Pokemons por tipo');
+  }
+}
+
+const formatPokemon = (item) => {
+  return {
+    id: item.id,
+    name: item.name,
+    image:
+      item?.sprites.front_default ||
+      item?.sprites?.other?.['official-artwork']?.front_default,
+    types: item.types.map((type) => type.type.name),
+    abilities: item.abilities.map((ability) => ability.ability.name),
+    height: item.height / 10,
+    weight: item.weight / 10,
+    baseExp: item.base_experience,
+    stats: item.stats.reduce((acc, stat) => {
+      acc[stat.stat.name.replace('-', '_')] = stat.base_stat;
+      return acc;
+    }, {}),
+    totalStats: item.stats.reduce((acc, cur) => acc + cur.base_stat, 0),
+  };
+};
+
+const getWeaknesses = async (pokemon) => {
+  try {
+    const types = pokemon.types.map((t) => t.type.name);
 
     const allDamageRelations = await Promise.all(
-      types.map((type) => api.get(`/type/${type}`).then(res => res.data))
+      types.map((type) => api.get(`/type/${type}`).then((res) => res.data))
     );
 
     const weaknesses =
@@ -61,14 +93,15 @@ const getWeaknesses = async (pokemonName) => {
 
     return { success: true, data: weaknesses };
   } catch (error) {
-    return {
-      success: false,
-      message: error?.response?.data?.message || 'Erro ao buscar as fraquezas',
-    };
+    return handleError(error, 'Erro ao buscar fraquezas');
   }
 };
 
 const getEvolutionNames = (chain) => {
+  if (!chain) {
+    throw new Error('Invalid evolution chain');
+  }
+
   const names = [];
 
   const traverse = (node) => {
@@ -84,12 +117,10 @@ const getEvolutionNames = (chain) => {
   return names;
 };
 
-const getEvolutionImages = async (pokemonName) => {
+const getEvolutionImages = async (pokemon) => {
   try {
-    const pokemonResponse = await api.get(`/pokemon/${pokemonName}`);
-
     const speciesResponse = await api.get(
-      pokemonResponse.data.species.url.replace('https://pokeapi.co/api/v2', '')
+      pokemon.species.url.replace('https://pokeapi.co/api/v2', '')
     );
 
     const evolutionResponse = await api.get(
@@ -114,11 +145,39 @@ const getEvolutionImages = async (pokemonName) => {
 
     return { success: true, data: evolutions };
   } catch (error) {
-    return {
-      success: false,
-      message: error?.response?.data?.message || 'Erro ao buscar as evoluções',
-    };
+    return handleError(error, 'Erro ao buscar evoluções');
   }
 };
 
-export { getPokemons, getPokemoInfo, getWeaknesses, getEvolutionImages };
+const getPokemonSpecies = async (name) => {
+  try {
+    const res = await api.get(`/pokemon-species/${name}`);
+
+    const genus =
+      res.data.genera.find((g) => g.language.name === 'en')?.genus ||
+      'Unknown Pokemon';
+
+    const entry =
+      res.data.flavor_text_entries
+        .find((f) => f.language.name === 'en')
+        ?.flavor_text.replace(/\f/g, ' ') || 'No description available.';
+
+    return {
+      success: true,
+      data: { genus, entry },
+    };
+  } catch (error) {
+    return handleError(error, 'Erro ao buscar species');
+  }
+};
+
+const pokemonServices = {
+  get: getPokemons,
+  getByName: getPokemonByName,
+  getByType: getPokemonByType,
+  getWeakness: getWeaknesses,
+  getEvo: getEvolutionImages,
+  getSpecies: getPokemonSpecies,
+};
+
+export default pokemonServices;
