@@ -19,14 +19,14 @@ A aplicação permite explorar informações detalhadas sobre os Pokémon, inclu
 
 Este projeto foi desenvolvido com o objetivo de praticar:
 
-Consumo de APIs REST
-Gerenciamento de estado com Context API
-Criação de hooks customizados
-Paginação client-side
-Organização de código em services
-Tratamento de erros
-Otimização com useCallback e useMemo
-Interface responsiva com Tailwind CSS
+- Consumo de APIs REST
+- Gerenciamento de estado com Context API
+- Criação de hooks customizados
+- Paginação client-side
+- Organização de código em services
+- Tratamento de erros
+- Otimização com useCallback e useMemo
+- Interface responsiva com Tailwind CSS
 
 A aplicação consome a PokéAPI para exibir informações completas sobre cada Pokémon.
 
