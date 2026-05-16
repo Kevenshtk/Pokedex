@@ -104,7 +104,7 @@ export const PokemonContextProvider = ({ children }) => {
           'Pokémon não encontrado, verifique o nome e tente novamente.'
         );
         setLoadingDetails(false);
-        return;
+        return false;
       }
 
       setSelectedPokemon(result.data);
@@ -112,6 +112,7 @@ export const PokemonContextProvider = ({ children }) => {
       await loadWeaknesses(result.raw);
       await loadEvolution(result.raw);
       setLoadingDetails(false);
+      return true;
     },
     [loadWeaknesses, loadEvolution]
   );

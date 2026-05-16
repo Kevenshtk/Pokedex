@@ -64,7 +64,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 flex-1 overflow-hidden min-h-0 pb-4">
           <div className="lg:col-span-8 flex flex-col h-full overflow-hidden min-h-0">
-            <Filters from={from} to={to} total={total} />
+            <Filters from={from} to={to} total={total} onSearch={() => setIsModalOpen(true)} />
 
             <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 flex-1 overflow-hidden mt-4 min-h-0 relative">
               <div className="flex md:hidden justify-between w-full mb-2">
@@ -126,7 +126,7 @@ export default function Home() {
           </div>
 
           <div 
-            className={`lg:col-span-4 lg:mt-0 h-full lg:overflow-y-auto lg:[&::-webkit-scrollbar]:w-2 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full lg:pb-8 lg:[-webkit-mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%_-_32px),transparent)] lg:[mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%_-_32px),transparent)] ${isModalOpen ? 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 mt-0' : 'hidden lg:block'}`}
+            className={`lg:col-span-4 lg:mt-0 h-full lg:overflow-y-auto lg:[&::-webkit-scrollbar]:w-2 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full lg:pb-8 lg:[-webkit-mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%_-_32px),transparent)] lg:[mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%_-_32px),transparent)] ${isModalOpen ? 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 mt-0 lg:static lg:inset-auto lg:z-0 lg:bg-transparent lg:p-0 lg:block' : 'hidden lg:block'}`}
             onClick={() => setIsModalOpen(false)}
           >
             <div 

@@ -12,9 +12,10 @@ type FiltersProps = {
   from: number;
   to: number;
   total: number;
+  onSearch?: () => void;
 };
 
-const Filters = ({ from, to, total }: FiltersProps) => {
+const Filters = ({ from, to, total, onSearch }: FiltersProps) => {
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const { searchPokemon, clearFilters } =
@@ -25,7 +26,8 @@ const Filters = ({ from, to, total }: FiltersProps) => {
   };
 
   const handleSearch = async (name: string) => {
-    await searchPokemon(name);
+    const success = await searchPokemon(name);
+    if (success && onSearch) onSearch();
   };
 
   return (
