@@ -46,7 +46,7 @@ export interface EvolutionItem {
   image: string | null;
 }
 
-interface SpeciesData {
+export interface SpeciesData {
   genus: string;
   entry: string;
 }

@@ -3,16 +3,33 @@ import { createContext } from 'react';
 import { useState, useCallback } from 'react';
 import pokemonServices from '../services/pokemonServices';
 
+import type {
+  PokemonContextType,
+  PokemonContextProviderProps,
+} from '../types/context.types';
+import {
+  PokemonDetails,
+  EvolutionItem,
+  SpeciesData,
+} from '../types/pokemon.service.types';
+import { PokemonApiDetails } from '../types/pokemon.api.types';
+
 import { toast } from 'sonner';
 
-export const PokemonContext = createContext();
+export const PokemonContext = createContext<PokemonContextType | undefined>(
+  undefined
+);
 
-export const PokemonContextProvider = ({ children }) => {
-  const [dataPokemons, setDataPokemons] = useState([]);
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const [weaknesses, setWeaknesses] = useState([]);
-  const [evolutions, setEvolutions] = useState([]);
-  const [species, setSpecies] = useState(null);
+export const PokemonContextProvider = ({
+  children,
+}: PokemonContextProviderProps) => {
+  const [dataPokemons, setDataPokemons] = useState<PokemonDetails[]>([]);
+  const [selectedPokemon, setSelectedPokemon] = useState<PokemonDetails | null>(
+    null
+  );
+  const [weaknesses, setWeaknesses] = useState<string[]>([]);
+  const [evolutions, setEvolutions] = useState<EvolutionItem[]>([]);
+  const [species, setSpecies] = useState<SpeciesData | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
   const pageSize = 36;
@@ -41,8 +58,8 @@ export const PokemonContextProvider = ({ children }) => {
     return await loadPokemons(newOffset);
   };
 
-  const loadWeaknesses = useCallback(async (pokemonName) => {
-    const result = await pokemonServices.getWeakness(pokemonName);
+  const loadWeaknesses = useCallback(async (pokemon: PokemonApiDetails) => {
+    const result = await pokemonServices.getWeakness(pokemon);
 
     if (!result.success) {
       toast.error(result.message);
@@ -52,8 +69,8 @@ export const PokemonContextProvider = ({ children }) => {
     setWeaknesses(result.data);
   }, []);
 
-  const loadEvolution = useCallback(async (pokemonName) => {
-    const result = await pokemonServices.getEvo(pokemonName);
+  const loadEvolution = useCallback(async (pokemon: PokemonApiDetails) => {
+    const result = await pokemonServices.getEvo(pokemon);
 
     if (!result.success) {
       toast.error(result.message);
@@ -63,7 +80,7 @@ export const PokemonContextProvider = ({ children }) => {
     setEvolutions(result.data);
   }, []);
 
-  const loadSpecies = async (name) => {
+  const loadSpecies = async (name: string) => {
     const result = await pokemonServices.getSpecies(name);
 
     if (!result.success) {
@@ -75,7 +92,7 @@ export const PokemonContextProvider = ({ children }) => {
   };
 
   const loadPokemonDetails = useCallback(
-    async (pokemonName) => {
+    async (pokemonName: string) => {
       setLoadingDetails(true);
       const result = await pokemonServices.getByName(pokemonName);
 
@@ -90,7 +107,7 @@ export const PokemonContextProvider = ({ children }) => {
   );
 
   const searchPokemon = useCallback(
-    async (pokemonName) => {
+    async (pokemonName: string) => {
       if (!pokemonName) {
         toast.error('Por favor, insira o nome de um Pokémon.');
         return;
@@ -117,10 +134,10 @@ export const PokemonContextProvider = ({ children }) => {
     [loadWeaknesses, loadEvolution]
   );
 
-  const filterPokemonByType = async (type) => {
+  const filterPokemonByType = async (type: string) => {
     const result = await pokemonServices.getByType(type);
 
-    if (!result.success){
+    if (!result.success) {
       toast.error(result.message);
       return;
     }
@@ -135,8 +152,13 @@ export const PokemonContextProvider = ({ children }) => {
     await loadPokemons();
   };
 
-  const selectPokemonByEvo = async (nome) => {
-    const result = await pokemonServices.getByName(nome);
+  const selectPokemonByEvo = async (name: string) => {
+    const result = await pokemonServices.getByName(name);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
 
     setSelectedPokemon(result.data);
   };

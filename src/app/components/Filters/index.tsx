@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { PokemonContext } from '../../context/pokemon';
+import { useState } from 'react';
+import { usePokemonContext } from '../../hooks/usePokemonContext';
 import { contentBtn } from './contentBtnFilters';
 
 import type { FiltersProps } from '../../types/components.types';
@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 const Filters = ({ from, to, total, onSearch }: FiltersProps) => {
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const [search, setSearch] = useState('');
-  const { searchPokemon, clearFilters } = useContext(PokemonContext);
+  const { searchPokemon, clearFilters } = usePokemonContext();
 
   const toggleDropdown = () => {
     setOpenDropdown(!openDropdown);

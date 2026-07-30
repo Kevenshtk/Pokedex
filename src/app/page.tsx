@@ -1,8 +1,7 @@
 'use client';
+import { useEffect, useState, useRef } from 'react';
 
-import { useContext, useEffect, useState, useRef } from 'react';
-
-import { PokemonContext } from './context/pokemon';
+import { usePokemonContext } from './hooks/usePokemonContext';
 import usePagination from './hooks/usePagination';
 
 import { FaAngleLeft, FaAngleRight, FaArrowUp } from 'react-icons/fa';
@@ -19,7 +18,7 @@ export default function Home() {
     loadMorePokemons,
     selectedPokemon,
     setSelectedPokemon,
-  } = useContext(PokemonContext);
+  } = usePokemonContext();
 
   const {
     page,

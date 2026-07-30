@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo } from 'react';
-import { PokemonContext } from '../../context/pokemon';
+import { useEffect, useMemo } from 'react';
+import { usePokemonContext } from '../../hooks/usePokemonContext';
 import Image from 'next/image';
 import ImgErro from '../../../../public/triangle-exclamation-solid.svg';
 
@@ -15,7 +15,7 @@ const Sidebar = ({ pokemon }: SidebarProps) => {
     selectedPokemon,
     species,
     selectPokemonByEvo
-  } = useContext(PokemonContext);
+  } = usePokemonContext();
 
   const POKEMON_STATS = useMemo(
     () => [
