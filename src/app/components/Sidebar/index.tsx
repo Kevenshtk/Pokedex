@@ -1,12 +1,12 @@
 import { useContext, useEffect, useMemo } from 'react';
 import { PokemonContext } from '../../context/pokemon';
 import Image from 'next/image';
-
 import ImgErro from '../../../../public/triangle-exclamation-solid.svg';
 
+import type { SidebarProps } from '../../types/components.types';
 import { TYPE_COLORS as Colors } from '../../constants';
 
-const Sidebar = ({ pokemon }) => {
+const Sidebar = ({ pokemon }: SidebarProps) => {
   const {
     loadPokemonDetails,
     loadingDetails,
@@ -78,7 +78,7 @@ const Sidebar = ({ pokemon }) => {
   }, [pokemon?.name, loadPokemonDetails]);
 
   return (
-    <div className="bg-white rounded-[40px] shadow-lg p-6 md:p-8 h-fit lg:sticky lg:top-6 lg:mr-2 min-h-[400px] flex flex-col">
+    <div className="bg-white rounded-[40px] shadow-lg p-6 md:p-8 h-fit lg:sticky lg:top-6 lg:mr-2 min-h-100 flex flex-col">
       {loadingDetails ? (
         <div className="flex-1 flex flex-col items-center justify-center py-20">
           <div className="w-12 h-12 border-4 border-gray-100 border-t-red-500 rounded-full animate-spin mb-4"></div>
@@ -101,6 +101,7 @@ const Sidebar = ({ pokemon }) => {
               className="object-contain drop-shadow-2xl -mt-10 z-10"
               width={192}
               height={192}
+              unoptimized // uso temporário para evitar problemas com o Image Optimizer
             />
           </div>
 
@@ -229,11 +230,12 @@ const Sidebar = ({ pokemon }) => {
                 return (
                   <div key={index} className="flex items-center gap-3">
                     <Image
-                      src={evolution.image}
+                      src={evolution?.image || ImgErro}
                       alt={evolution.name}
                       className={`${selectedPokemon?.name === evolution.name ? '' : 'grayscale opacity-50'}`}
                       width={40}
                       height={40}
+                      unoptimized // uso temporário para evitar problemas com o Image Optimizer
                     />
 
                     {evolutions.length - 1 !== index && (

@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-
 import { PokemonContext } from '../../context/pokemon';
+import type { DropdownProps } from '../../types/components.types';
 
-const Dropdown = ({ items, setOpenDropdown }) => {
+const Dropdown = ({ items, setOpenDropdown }: DropdownProps) => {
   const { filterPokemonByType } = useContext(PokemonContext);
 
   return (

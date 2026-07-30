@@ -1,13 +1,4 @@
-type DropdownItem = {
-    label: string;
-    value: string;
-}
-
-type ContentBtn = {
-    icon: string;
-    label: string;
-    itensDropdown?: DropdownItem[];
-}
+import type { ContentBtn } from '../../types/components.types';
 
 const contentBtn: ContentBtn[] = [
   {
