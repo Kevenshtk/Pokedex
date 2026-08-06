@@ -7,12 +7,13 @@ import type {
   PokemonContextType,
   PokemonContextProviderProps,
 } from '../types/context.types';
-import {
+import type {
   PokemonDetails,
   EvolutionItem,
   SpeciesData,
 } from '../types/pokemon.service.types';
-import { PokemonApiDetails } from '../types/pokemon.api.types';
+import type { PokemonApiDetails } from '../types/pokemon.api.types';
+import { PokemonType } from '../types';
 
 import { toast } from 'sonner';
 
@@ -26,8 +27,8 @@ export const PokemonContextProvider = ({
   const [dataPokemons, setDataPokemons] = useState<PokemonDetails[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonDetails | null>(
     null
-  );
-  const [weaknesses, setWeaknesses] = useState<string[]>([]);
+);
+  const [weaknesses, setWeaknesses] = useState<PokemonType[]>([]);
   const [evolutions, setEvolutions] = useState<EvolutionItem[]>([]);
   const [species, setSpecies] = useState<SpeciesData | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);

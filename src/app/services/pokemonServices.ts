@@ -130,11 +130,9 @@ const getWeaknesses = async (
       )
     );
 
-    const weaknesses =
+    const weaknesses: PokemonType[] =
       allDamageRelations[0].damage_relations.double_damage_from.map(
-        (damage_relations) => {
-          return damage_relations.name;
-        }
+        (damage_relations) => damage_relations.name as PokemonType
       );
 
     return { success: true, data: weaknesses };

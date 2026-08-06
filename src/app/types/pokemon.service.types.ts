@@ -53,6 +53,6 @@ export interface SpeciesData {
 
 export type PokemonListResponse = ServiceSuccess<PokemonDetails[]> | ServiceError;
 export type PokemonByNameResponse = PokemonByNameSuccess | ServiceError;
-export type WeaknessResponse = ServiceSuccess<string[]> | ServiceError;
+export type WeaknessResponse = ServiceSuccess<PokemonType[]> | ServiceError;
 export type EvolutionResponse = ServiceSuccess<EvolutionItem[]> | ServiceError;
 export type SpeciesResponse = ServiceSuccess<SpeciesData> | ServiceError;

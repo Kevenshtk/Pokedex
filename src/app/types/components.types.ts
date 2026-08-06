@@ -31,5 +31,5 @@ export type PokemonCardProps = {
 };
 
 export type SidebarProps = {
-  pokemon: PokemonDetails;
+  pokemon: PokemonDetails | null;
 };

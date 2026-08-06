@@ -1,4 +1,5 @@
 import type { PokemonDetails, EvolutionItem, SpeciesData } from './pokemon.service.types';
+import { PokemonType } from '../types';
 import { ReactNode } from 'react';
 
 export type PokemonContextType = {
@@ -9,7 +10,7 @@ export type PokemonContextType = {
   setSelectedPokemon: (p: PokemonDetails) => void;
   loadPokemonDetails: (pokemonName: string) => Promise<void>;
   loadingDetails: boolean;
-  weaknesses: string[];
+  weaknesses: PokemonType[];
   evolutions: EvolutionItem[];
   species: SpeciesData | null;
   selectPokemonByEvo: (name: string) => Promise<void | undefined>;

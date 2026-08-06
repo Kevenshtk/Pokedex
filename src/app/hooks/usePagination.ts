@@ -1,6 +1,9 @@
 import { useState, useMemo } from 'react';
 
-const usePagination = (pokemons, visible = 9) => {
+import type { PokemonDetails } from '../types/pokemon.service.types';
+
+
+const usePagination = (pokemons: PokemonDetails[], visible = 9) => {
   const [offset, setOffset] = useState(0);
 
   const page = useMemo(() => {
