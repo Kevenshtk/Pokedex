@@ -27,7 +27,7 @@ export const PokemonContextProvider = ({
   const [dataPokemons, setDataPokemons] = useState<PokemonDetails[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonDetails | null>(
     null
-);
+  );
   const [weaknesses, setWeaknesses] = useState<PokemonType[]>([]);
   const [evolutions, setEvolutions] = useState<EvolutionItem[]>([]);
   const [species, setSpecies] = useState<SpeciesData | null>(null);
@@ -86,6 +86,10 @@ export const PokemonContextProvider = ({
 
     if (!result.success) {
       toast.error(result.message);
+      setSpecies({
+        genus: 'Information unavailable.',
+        entry: 'Description unavailable.',
+      });
       return;
     }
 
@@ -96,9 +100,10 @@ export const PokemonContextProvider = ({
     async (pokemonName: string) => {
       setLoadingDetails(true);
       const result = await pokemonServices.getByName(pokemonName);
+      
 
       if (result.success) {
-        await loadSpecies(pokemonName);
+        await loadSpecies(result.raw.species.name);
         await loadWeaknesses(result.raw);
         await loadEvolution(result.raw);
       }
@@ -126,7 +131,7 @@ export const PokemonContextProvider = ({
       }
 
       setSelectedPokemon(result.data);
-      await loadSpecies(pokemonName);
+      await loadSpecies(result.raw.species.name);
       await loadWeaknesses(result.raw);
       await loadEvolution(result.raw);
       setLoadingDetails(false);
