@@ -75,6 +75,7 @@ export const PokemonContextProvider = ({
 
     if (!result.success) {
       toast.error(result.message);
+      setEvolutions([{ name: 'Information unavailable.', image: null }]);
       return;
     }
 
@@ -100,7 +101,6 @@ export const PokemonContextProvider = ({
     async (pokemonName: string) => {
       setLoadingDetails(true);
       const result = await pokemonServices.getByName(pokemonName);
-      
 
       if (result.success) {
         await loadSpecies(result.raw.species.name);

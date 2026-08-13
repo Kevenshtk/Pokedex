@@ -37,9 +37,7 @@ const handleError = (error: unknown, fallback: string): ServiceError => {
   };
 };
 
-const formatPokemon = (
-  item: PokemonApiDetails
-): PokemonDetails => {
+const formatPokemon = (item: PokemonApiDetails): PokemonDetails => {
   return {
     id: item.id,
     name: item.name,
@@ -87,9 +85,7 @@ const getPokemonByName = async (
   name: string
 ): Promise<PokemonByNameResponse> => {
   try {
-    const response = await api.get<PokemonApiDetails>(
-      `/pokemon/${name}`
-    );
+    const response = await api.get<PokemonApiDetails>(`/pokemon/${name}`);
 
     return {
       success: true,
@@ -176,15 +172,21 @@ const getEvolutionImages = async (
 
     const evolutions = await Promise.all(
       evolutionNames.map(async (name) => {
-        const res = await api.get<PokemonApiDetails>(
-          `/pokemon/${name}`
-        );
+        try {
+          const res = await api.get<PokemonApiDetails>(`/pokemon/${name}`);
 
-        return {
-          name,
-          image:
-            res.data.sprites.other?.['official-artwork']?.front_default || null,
-        };
+          return {
+            name,
+            image:
+              res.data.sprites.other?.['official-artwork']?.front_default ||
+              null,
+          };
+        } catch {
+          return {
+            name,
+            image: null,
+          };
+        }
       })
     );
 
