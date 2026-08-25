@@ -46,13 +46,13 @@ export interface EvolutionItem {
   image: string | null;
 }
 
-interface SpeciesData {
+export interface SpeciesData {
   genus: string;
   entry: string;
 }
 
 export type PokemonListResponse = ServiceSuccess<PokemonDetails[]> | ServiceError;
 export type PokemonByNameResponse = PokemonByNameSuccess | ServiceError;
-export type WeaknessResponse = ServiceSuccess<string[]> | ServiceError;
+export type WeaknessResponse = ServiceSuccess<PokemonType[]> | ServiceError;
 export type EvolutionResponse = ServiceSuccess<EvolutionItem[]> | ServiceError;
 export type SpeciesResponse = ServiceSuccess<SpeciesData> | ServiceError;

@@ -1,12 +1,12 @@
-import { useContext, useEffect, useMemo } from 'react';
-import { PokemonContext } from '../../context/pokemon';
+import { useEffect, useMemo } from 'react';
+import { usePokemonContext } from '../../hooks/usePokemonContext';
 import Image from 'next/image';
-
 import ImgErro from '../../../../public/triangle-exclamation-solid.svg';
 
+import type { SidebarProps } from '../../types/components.types';
 import { TYPE_COLORS as Colors } from '../../constants';
 
-const Sidebar = ({ pokemon }) => {
+const Sidebar = ({ pokemon }: SidebarProps) => {
   const {
     loadPokemonDetails,
     loadingDetails,
@@ -14,8 +14,8 @@ const Sidebar = ({ pokemon }) => {
     evolutions,
     selectedPokemon,
     species,
-    selectPokemonByEvo
-  } = useContext(PokemonContext);
+    selectPokemonByEvo,
+  } = usePokemonContext();
 
   const POKEMON_STATS = useMemo(
     () => [
@@ -78,11 +78,13 @@ const Sidebar = ({ pokemon }) => {
   }, [pokemon?.name, loadPokemonDetails]);
 
   return (
-    <div className="bg-white rounded-[40px] shadow-lg p-6 md:p-8 h-fit lg:sticky lg:top-6 lg:mr-2 min-h-[400px] flex flex-col">
+    <div className="bg-white rounded-[40px] shadow-lg p-6 md:p-8 h-fit lg:sticky lg:top-6 lg:mr-2 min-h-100 flex flex-col">
       {loadingDetails ? (
         <div className="flex-1 flex flex-col items-center justify-center py-20">
           <div className="w-12 h-12 border-4 border-gray-100 border-t-red-500 rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-400 font-medium animate-pulse">Loading data...</p>
+          <p className="text-gray-400 font-medium animate-pulse">
+            Loading data...
+          </p>
         </div>
       ) : (
         <>
@@ -101,15 +103,20 @@ const Sidebar = ({ pokemon }) => {
               className="object-contain drop-shadow-2xl -mt-10 z-10"
               width={192}
               height={192}
+              unoptimized // uso temporário para evitar problemas com o Image Optimizer
             />
           </div>
 
           <div className="text-center mb-6">
-            <span className="text-sm font-bold text-gray-400">#{pokemon?.id}</span>
+            <span className="text-sm font-bold text-gray-400">
+              #{pokemon?.id}
+            </span>
             <h2 className="text-3xl font-extrabold text-gray-800 capitalize">
               {pokemon?.name}
             </h2>
-            <p className="text-gray-400 text-sm font-medium">{species?.genus}</p>
+            <p className="text-gray-400 text-sm font-medium">
+              {species?.genus}
+            </p>
           </div>
 
           <div className="flex justify-center gap-2 mb-6">
@@ -205,7 +212,7 @@ const Sidebar = ({ pokemon }) => {
                     <div
                       className={`w-full ${stat.color} rounded-full`}
                       style={{
-                        height: `${(stat.value / (stat.label === 'Total' ? 700 : 150)) * 100}%`,
+                        height: `${((stat.value ?? 0) / (stat.label === 'Total' ? 700 : 150)) * 100}%`,
                       }}
                     ></div>
                   </div>
@@ -229,11 +236,12 @@ const Sidebar = ({ pokemon }) => {
                 return (
                   <div key={index} className="flex items-center gap-3">
                     <Image
-                      src={evolution.image}
+                      src={evolution?.image || ImgErro}
                       alt={evolution.name}
                       className={`${selectedPokemon?.name === evolution.name ? '' : 'grayscale opacity-50'}`}
                       width={40}
                       height={40}
+                      unoptimized // uso temporário para evitar problemas com o Image Optimizer
                     />
 
                     {evolutions.length - 1 !== index && (
@@ -250,7 +258,10 @@ const Sidebar = ({ pokemon }) => {
               {prev && (
                 <>
                   <i className="fa-solid fa-chevron-left text-xs"></i>
-                  <span className="text-xs font-bold cursor-pointer" onClick={() => selectPokemonByEvo(prev.name)}>
+                  <span
+                    className="text-xs font-bold cursor-pointer"
+                    onClick={() => selectPokemonByEvo(prev.name)}
+                  >
                     {prev.name}
                   </span>
                 </>
@@ -259,7 +270,10 @@ const Sidebar = ({ pokemon }) => {
             <button className="flex items-center space-x-2 text-gray-400 hover:text-gray-600 transition-colors">
               {next && (
                 <>
-                  <span className="text-xs font-bold cursor-pointer" onClick={() => selectPokemonByEvo(next.name)}>
+                  <span
+                    className="text-xs font-bold cursor-pointer"
+                    onClick={() => selectPokemonByEvo(next.name)}
+                  >
                     {next.name}
                   </span>
                   <i className="fa-solid fa-chevron-right text-xs"></i>

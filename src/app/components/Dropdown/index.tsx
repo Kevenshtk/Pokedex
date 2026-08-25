@@ -1,9 +1,8 @@
-import { useContext } from 'react';
+import { usePokemonContext } from '../../hooks/usePokemonContext';
+import type { DropdownProps } from '../../types/components.types';
 
-import { PokemonContext } from '../../context/pokemon';
-
-const Dropdown = ({ items, setOpenDropdown }) => {
-  const { filterPokemonByType } = useContext(PokemonContext);
+const Dropdown = ({ items, setOpenDropdown }: DropdownProps) => {
+  const { filterPokemonByType } = usePokemonContext();
 
   return (
     <div className="absolute top-12 left-0 w-40 bg-white rounded-md shadow-md z-10 py-1">

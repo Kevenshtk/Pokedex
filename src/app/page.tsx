@@ -1,8 +1,7 @@
 'use client';
+import { useEffect, useState, useRef } from 'react';
 
-import { useContext, useEffect, useState, useRef } from 'react';
-
-import { PokemonContext } from './context/pokemon';
+import { usePokemonContext } from './hooks/usePokemonContext';
 import usePagination from './hooks/usePagination';
 
 import { FaAngleLeft, FaAngleRight, FaArrowUp } from 'react-icons/fa';
@@ -19,7 +18,7 @@ export default function Home() {
     loadMorePokemons,
     selectedPokemon,
     setSelectedPokemon,
-  } = useContext(PokemonContext);
+  } = usePokemonContext();
 
   const {
     page,
@@ -34,12 +33,13 @@ export default function Home() {
   } = usePagination(dataPokemons, 9);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const cardsContainerRef = useRef(null);
+  const cardsContainerRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToTop = () => {
     if (cardsContainerRef.current) {
       cardsContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -93,7 +93,7 @@ export default function Home() {
 
               <div 
                 ref={cardsContainerRef}
-                className="flex-1 overflow-y-auto w-full h-full pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%_-_32px),transparent)] [mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%_-_32px),transparent)]"
+                className="flex-1 overflow-y-auto w-full h-full pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%-32px),transparent)] mask-[linear-gradient(to_bottom,transparent,black_32px,black_calc(100%-32px),transparent)]"
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 py-8">
                   {page.length === 0 ? (
@@ -126,7 +126,7 @@ export default function Home() {
           </div>
 
           <div 
-            className={`lg:col-span-4 lg:mt-0 h-full lg:overflow-y-auto lg:[&::-webkit-scrollbar]:w-2 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full lg:pb-8 lg:[-webkit-mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%_-_32px),transparent)] lg:[mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%_-_32px),transparent)] ${isModalOpen ? 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 mt-0 lg:static lg:inset-auto lg:z-0 lg:bg-transparent lg:p-0 lg:block' : 'hidden lg:block'}`}
+            className={`lg:col-span-4 lg:mt-0 h-full lg:overflow-y-auto lg:[&::-webkit-scrollbar]:w-2 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full lg:pb-8 lg:[-webkit-mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%-32px),transparent)] lg:mask-[linear-gradient(to_bottom,transparent,black_32px,black_calc(100%-32px),transparent)] ${isModalOpen ? 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 mt-0 lg:static lg:inset-auto lg:z-0 lg:bg-transparent lg:p-0 lg:block' : 'hidden lg:block'}`}
             onClick={() => setIsModalOpen(false)}
           >
             <div 

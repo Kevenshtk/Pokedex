@@ -1,28 +1,19 @@
-import { useState, useContext } from 'react';
-
-import { PokemonContext } from '../../context/pokemon';
-
+import { useState } from 'react';
+import { usePokemonContext } from '../../hooks/usePokemonContext';
 import { contentBtn } from './contentBtnFilters';
 
-import Dropdown from '../Dropdown';
+import type { FiltersProps } from '../../types/components.types';
 
+import Dropdown from '../Dropdown';
 import { toast } from 'sonner';
 
-type FiltersProps = {
-  from: number;
-  to: number;
-  total: number;
-  onSearch?: () => void;
-};
-
 const Filters = ({ from, to, total, onSearch }: FiltersProps) => {
-  const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const [search, setSearch] = useState('');
-  const { searchPokemon, clearFilters } =
-    useContext(PokemonContext);
+  const { searchPokemon, clearFilters } = usePokemonContext();
 
-  const toggleDropdown = (index: number) => {
-    setOpenDropdown((prev) => (prev === index ? null : index));
+  const toggleDropdown = () => {
+    setOpenDropdown(!openDropdown);
   };
 
   const handleSearch = async (name: string) => {
@@ -71,7 +62,7 @@ const Filters = ({ from, to, total, onSearch }: FiltersProps) => {
               className="flex items-center space-x-2 bg-white px-4 py-2 rounded-xl shadow-sm hover:bg-gray-50 transition-colors cursor-pointer"
               onClick={() => {
                 if (btn.label === 'Type') {
-                  toggleDropdown(index);
+                  toggleDropdown();
                 } else {
                   toast.info('Funcionalidade indisponível!');
                 }
@@ -82,7 +73,7 @@ const Filters = ({ from, to, total, onSearch }: FiltersProps) => {
               <i className="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
             </button>
 
-            {openDropdown === index && btn.itensDropdown && (
+            {openDropdown === true && btn.itensDropdown && (
               <Dropdown
                 items={btn.itensDropdown}
                 setOpenDropdown={setOpenDropdown}
